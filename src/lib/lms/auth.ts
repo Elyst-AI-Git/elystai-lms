@@ -87,6 +87,85 @@ export async function requireEnrollment(
 }
 
 /**
+ * API-route variants: return null instead of redirecting so route handlers
+ * can answer 401/403 JSON (redirects make no sense on fetch calls).
+ */
+export async function getUserOrNull(): Promise<User | null> {
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+}
+
+/**
+ * Resolves the caller's ACTIVE enrollment for the course a lesson belongs
+ * to — the ownership chain every learner mutation route needs. Null when the
+ * lesson doesn't exist (or is invisible to the caller via RLS) or the caller
+ * has no active enrollment.
+ */
+export async function getEnrollmentForLesson(lessonId: string): Promise<
+  | {
+      user: User;
+      enrollmentId: string;
+      batchStartsOn: string;
+      lesson: { id: string; content_type: string; unlock_day_offset: number; is_preview: boolean };
+    }
+  | null
+> {
+  const user = await getUserOrNull();
+  if (!user) return null;
+  const supabase = await createServerSupabaseClient();
+
+  const { data: lesson } = await supabase
+    .schema("app")
+    .from("lessons")
+    .select("id, content_type, unlock_day_offset, is_preview, modules!inner(course_id)")
+    .eq("id", lessonId)
+    .maybeSingle();
+  if (!lesson) return null;
+  const moduleRow = Array.isArray(lesson.modules) ? lesson.modules[0] : lesson.modules;
+
+  const { data: enrollments } = await supabase
+    .schema("app")
+    .from("enrollments")
+    .select("id, created_at, batches!inner(course_id, starts_on)")
+    .eq("profile_id", user.id)
+    .eq("status", "active")
+    .eq("batches.course_id", moduleRow.course_id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+  const enrollment = enrollments?.[0];
+  if (!enrollment) return null;
+  const batch = Array.isArray(enrollment.batches) ? enrollment.batches[0] : enrollment.batches;
+
+  return {
+    user,
+    enrollmentId: enrollment.id,
+    batchStartsOn: batch.starts_on,
+    lesson: {
+      id: lesson.id,
+      content_type: lesson.content_type,
+      unlock_day_offset: lesson.unlock_day_offset,
+      is_preview: lesson.is_preview,
+    },
+  };
+}
+
+/** True when the user is in public.admin_users. For API routes. */
+export async function isAdmin(): Promise<User | null> {
+  const user = await getUserOrNull();
+  if (!user) return null;
+  const supabase = await createServerSupabaseClient();
+  const { data } = await supabase
+    .from("admin_users")
+    .select("profile_id")
+    .eq("profile_id", user.id)
+    .maybeSingle();
+  return data ? user : null;
+}
+
+/**
  * Admin gate (spec D8): membership in public.admin_users. Non-admins get a
  * 404, not a login hint — the admin surface should not advertise itself.
  */
