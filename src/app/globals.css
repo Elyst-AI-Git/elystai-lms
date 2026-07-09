@@ -1,0 +1,405 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Manrope — self-hosted from public/fonts/manrope/ */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/manrope/Manrope-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope/Manrope-SemiBold.ttf') format('truetype');
+}
+
+/*
+  Elyst AI — brand tokens wired from DESIGN.md (the locked constitution).
+  Light by default. Emerald only. No dark mode toggle — dark is a deliberate
+  per-section surface (--surface-dark), never a global theme.
+*/
+
+@theme inline {
+  /* shadcn semantic colours (re-skinned to brand) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* brand raw colours (utilities: bg-emerald, text-green, etc.) */
+  --color-emerald: var(--elyst-emerald);
+  --color-emerald-light: var(--elyst-emerald-light);
+  --color-green: var(--elyst-green);
+  --color-green-mid: var(--elyst-green-mid);
+  --color-ink: var(--elyst-ink);
+  --color-bg: var(--bg);
+  --color-surface-muted: var(--surface-muted);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-fg-on-dark: var(--fg-on-dark);
+  --color-fg-muted-dark: var(--fg-muted-dark);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-2: var(--surface-dark-2);
+  --color-surface-dark-hover: var(--surface-dark-hover);
+
+  /* fonts */
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: 'Manrope', system-ui, sans-serif;
+
+  /* type scale (utilities: text-hero, text-h1, …) */
+  --text-hero: clamp(2.8rem, 6vw, 5.5rem);
+  --text-h1: clamp(2.2rem, 4.5vw, 3.8rem);
+  --text-h2: clamp(1.85rem, 3.4vw, 2.7rem);
+  --text-h3: clamp(1.225rem, 2.1vw, 1.525rem);
+  --text-body: clamp(1.15rem, 1.45vw, 1.25rem);
+  --text-small: 1rem;
+  --text-eyebrow: 0.95rem;
+  /* sub-small labels: sub-eyebrows (Week 1), captions, and tiny meta text */
+  --text-label: 0.85rem;
+  --text-micro: 0.72rem;
+
+  /* tracking (utilities: tracking-display, tracking-body, tracking-wide) */
+  --tracking-display: -0.042em;
+  --tracking-body: -0.05em;
+  --tracking-wide: 0.084em;
+
+  /* radii (utilities: rounded-card, rounded-pill) */
+  --radius-card: 20px;
+  --radius-pill: 999px;
+
+  /* shadows (utilities: shadow-card, shadow-card-hover, shadow-glow) */
+  --shadow-card: 0 4px 24px rgba(3, 98, 76, 0.08);
+  --shadow-card-hover: 0 12px 40px rgba(3, 98, 76, 0.16);
+  --shadow-glow: 0 0 40px rgba(0, 223, 130, 0.2);
+  --color-brand: var(----brand);
+  --color-color-5: var(----color-5);
+  --color-color-4: var(----color-4);
+  --color-color-3: var(----color-3);
+  --color-color-2: var(----color-2);
+  --color-color-1: var(----color-1);
+}
+
+:root {
+  /* Brand (LOCKED — DESIGN.md §2) */
+  --elyst-emerald: #03624c;
+  --elyst-emerald-light: #04855f;
+  --elyst-green: #00df82;
+  --elyst-green-mid: #2ec866;
+  --elyst-ink: #060d09;
+  --elyst-carbon: #1a1a1a;
+
+  /* Surfaces — light is default */
+  --bg: hsl(140 18% 97%);
+  --surface-muted: hsl(145 14% 95%);
+
+  /* Text */
+  --fg: hsl(150 25% 5%);
+  --fg-2: hsl(155 17% 27%);
+  --fg-3: hsl(155 12% 40%);
+  --fg-on-dark: hsl(150 50% 96%);
+  --fg-muted-dark: hsl(155 24% 62%);
+
+  /* Lines & tints */
+  --green-tint-07: rgba(0, 223, 130, 0.07);
+  --green-tint-15: rgba(0, 223, 130, 0.15);
+  --emerald-tint-10: rgba(3, 98, 76, 0.1);
+
+  /* Legacy dark — deliberate single sections only */
+  --surface-dark: hsl(160 38% 9%);
+  --surface-dark-2: hsl(157 32% 13%);
+  --surface-dark-hover: hsl(155 32% 17%);
+
+  /* Spacing rhythm */
+  --section-py: clamp(80px, 10vw, 140px);
+  --section-px: clamp(20px, 6vw, 100px);
+
+  /* shadcn semantic tokens → brand values */
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --card: #ffffff;
+  --card-foreground: var(--fg);
+  --popover: #ffffff;
+  --popover-foreground: var(--fg);
+  --primary: var(--elyst-emerald);
+  --primary-foreground: var(--fg-on-dark);
+  --secondary: var(--surface-muted);
+  --secondary-foreground: var(--fg);
+  --muted: var(--surface-muted);
+  --muted-foreground: var(--fg-3);
+  --accent: var(--surface-muted);
+  --accent-foreground: var(--fg);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: hsl(155 18% 88%);
+  --input: hsl(155 18% 88%);
+  --ring: var(--elyst-emerald);
+  --radius: 0.75rem; /* 12px — button radius */
+  /* GradientText animated-glow palette — brand greens (not the installer's rainbow). */
+  --color-1: hsl(157 100% 44%); --color-2: hsl(160 92% 27%); --color-3: hsl(142 62% 48%); --color-4: hsl(154 76% 71%); --color-5: hsl(165 94% 20%); --brand: hsl(157 100% 44%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  ::selection {
+    background: var(--elyst-green);
+    color: var(--elyst-ink);
+  }
+  html {
+    @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    letter-spacing: var(--tracking-body);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+    letter-spacing: var(--tracking-display);
+    line-height: 1.08;
+    font-weight: 700;
+  }
+}
+
+/* Component primitives (DESIGN.md §5) — build once, reuse everywhere */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 12px;
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-body);
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      background-color 0.18s ease,
+      color 0.18s ease,
+      opacity 0.18s ease;
+    white-space: nowrap;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: var(--elyst-emerald);
+    color: var(--fg-on-dark);
+  }
+  .btn-primary:hover {
+    background: var(--elyst-emerald-light);
+  }
+  .btn-onlight {
+    background: #ffffff;
+    color: var(--elyst-emerald);
+  }
+  .btn-onlight:hover {
+    box-shadow: var(--shadow-card);
+  }
+  .btn-accent {
+    background: var(--elyst-green-mid);
+    color: var(--elyst-ink);
+  }
+  .btn-accent:hover {
+    filter: brightness(1.05);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--elyst-emerald);
+  }
+  .btn-ghost:hover {
+    background: var(--emerald-tint-10);
+  }
+  .btn-pill {
+    border-radius: var(--radius-pill);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--emerald-tint-10);
+    color: var(--elyst-emerald);
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0;
+  }
+
+  .eyebrow {
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    font-size: var(--text-eyebrow);
+    color: var(--fg-2);
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  .card-tint {
+    background: var(--green-tint-07);
+    border: 1px solid var(--green-tint-15);
+    border-radius: var(--radius-card);
+  }
+
+  /* Footer Zone 2 — giant wordmark filled with a slow-shifting emerald
+     gradient via background-clip:text (DESIGN.md footer NOTES). */
+  .wordmark-fill {
+    background-image: linear-gradient(
+      100deg,
+      var(--elyst-emerald) 0%,
+      var(--elyst-green) 50%,
+      var(--elyst-emerald) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: wordmark-shift 8s ease-in-out infinite;
+  }
+  /* Hero "runs" — heavy, clearly-visible animated gradient word */
+  .runs-word {
+    background-image: linear-gradient(
+      100deg,
+      var(--elyst-emerald) 0%,
+      var(--elyst-green-mid) 35%,
+      var(--elyst-green) 50%,
+      var(--elyst-green-mid) 65%,
+      var(--elyst-emerald) 100%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+    display: inline-block;
+    animation: wordmark-shift 5s ease-in-out infinite;
+    filter: drop-shadow(0 2px 10px rgba(0, 223, 130, 0.28));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .runs-word {
+      animation: none;
+    }
+  }
+
+  /* On touch devices the shifting gradient is just a continuous repaint
+     nobody can interact with — render "runs" as flat solid emerald. */
+  @media (hover: none) {
+    .runs-word {
+      animation: none;
+      background: none;
+      -webkit-background-clip: initial;
+      background-clip: initial;
+      -webkit-text-fill-color: var(--elyst-emerald);
+      color: var(--elyst-emerald);
+      filter: none;
+    }
+  }
+
+  @keyframes wordmark-shift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark-fill {
+      animation: none;
+    }
+  }
+
+  /* CosmicButton border animations (from @cult-ui/cosmic-button) */
+  @keyframes cosmic-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes cosmic-spin-slow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
+
+  /* GradientButtonGroup active-ring animation */
+  @keyframes gold-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+}
+
+/*
+  AIOS page — sharp-edged language. Every card/box on /aios drops its corner
+  radius (zeroed even over inline border-radius via !important). Genuinely
+  circular elements (rounded-full dots, bars, avatars, pills) are preserved.
+*/
+.aios-sharp [class*="rounded"]:not([class*="rounded-full"]):not(.metal-fx-root):not(.metal-fx-root *),
+.aios-sharp [style*="border-radius"]:not(.metal-fx-root):not(.metal-fx-root *),
+.aios-sharp [style*="borderRadius"]:not(.metal-fx-root):not(.metal-fx-root *),
+.aios-sharp .card {
+  border-radius: 0 !important;
+}
+
+@utility animate-cosmic-spin {
+  animation: cosmic-spin 3s linear infinite;
+}
+@utility animate-cosmic-spin-slow {
+  animation: cosmic-spin-slow 5s linear infinite;
+}
+@utility animate-gold-spin {
+  animation: gold-spin 4s linear infinite;
+}
+
+.dark {
+  --color-1: hsl(157 100% 44%);
+  --color-2: hsl(160 92% 27%);
+  --color-3: hsl(142 62% 48%);
+  --color-4: hsl(154 76% 71%);
+  --color-5: hsl(165 94% 20%);
+  --brand: hsl(157 100% 44%);
+}
