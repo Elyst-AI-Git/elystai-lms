@@ -1,13 +1,14 @@
+import { FolderOpen, Inbox, LibraryBig, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/lms/auth";
 
 export const dynamic = "force-dynamic";
 
 const NAV = [
-  { href: "/admin/content", label: "Content", icon: "📚" },
-  { href: "/admin/content/resources", label: "Resources", icon: "🗂" },
-  { href: "/admin/progress", label: "Progress", icon: "📈" },
-  { href: "/admin/submissions", label: "Submissions", icon: "📥" },
+  { href: "/admin/content", label: "Content", Icon: LibraryBig },
+  { href: "/admin/content/resources", label: "Resources", Icon: FolderOpen },
+  { href: "/admin/progress", label: "Progress", Icon: TrendingUp },
+  { href: "/admin/submissions", label: "Submissions", Icon: Inbox },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,7 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               href={item.href}
               className="pressable flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2 text-small font-medium text-fg-2 transition-colors hover:bg-emerald/5 hover:text-emerald"
             >
-              <span aria-hidden className="text-label">{item.icon}</span>
+              <item.Icon className="h-4 w-4" strokeWidth={2} aria-hidden />
               {item.label}
             </Link>
           ))}

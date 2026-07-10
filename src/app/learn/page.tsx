@@ -1,5 +1,7 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { CheckNode } from "@/components/learn/check-node";
+import { LessonTypeIcon, LockIcon } from "@/components/learn/lesson-icon";
 import { DayStrip } from "@/components/learn/day-strip";
 import { ProgressRing } from "@/components/learn/progress-ring";
 import { requireEnrollment } from "@/lib/lms/auth";
@@ -21,8 +23,6 @@ const IST_TIME = new Intl.DateTimeFormat("en-IN", {
   hour: "numeric",
   minute: "2-digit",
 });
-
-const TYPE_ICON: Record<string, string> = { video: "▶", text: "📄", task: "✏️" };
 
 // IST calendar-day difference (a session at 00:30 IST tonight is "tomorrow",
 // not "today", regardless of hour distance).
@@ -88,7 +88,7 @@ export default async function LearnDashboard() {
                 ? `Starts ${IST_DATE.format(unlockDate(0, batch.starts_on))}`
                 : `Day ${today + 1} of ${Math.max(...progress.perDay.map((d) => d.day + 1), today + 1)}`}
             </h1>
-            <p className="mt-1 text-label text-fg-muted-dark">
+            <p className="tnum mt-1 text-label text-fg-muted-dark">
               {progress.completedLessons} of {progress.totalLessons} lessons done
             </p>
           </div>
@@ -108,14 +108,17 @@ export default async function LearnDashboard() {
           className="pressable rise flex items-center justify-between gap-4 rounded-card border-2 border-green/60 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
           style={{ ["--stagger-i" as string]: 1 }}
         >
-          <div className="min-w-0">
-            <p className="text-label font-semibold uppercase tracking-wide text-emerald">Continue</p>
-            <p className="mt-0.5 truncate font-display font-bold text-fg">
-              {TYPE_ICON[continueLesson.content_type]} {continueLesson.title}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald">
+              <LessonTypeIcon type={continueLesson.content_type} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-label font-semibold uppercase tracking-wide text-emerald">Continue</p>
+              <p className="mt-0.5 truncate font-display font-bold text-fg">{continueLesson.title}</p>
+            </div>
           </div>
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-green font-bold text-ink">
-            →
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-green text-ink">
+            <ArrowRight className="h-5 w-5" strokeWidth={2.5} aria-hidden />
           </span>
         </Link>
       )}
@@ -169,6 +172,8 @@ export default async function LearnDashboard() {
           const nextToUnlock =
             !unlocked && progress.perDay.filter((d) => !isUnlocked(d.day, batch.starts_on, now))[0]?.day === day.day;
 
+          const numeral = String(day.day + 1).padStart(2, "0");
+
           if (unlocked && done && !isToday) {
             // completed past day: slim row
             return (
@@ -178,9 +183,10 @@ export default async function LearnDashboard() {
                 className="pressable rise flex items-center gap-3 rounded-card bg-white/60 px-4 py-2.5"
                 style={{ ["--stagger-i" as string]: i + 3 }}
               >
+                <span className="tnum w-9 font-display text-small font-bold text-fg-3">{numeral}</span>
                 <CheckNode done />
-                <p className="flex-1 text-small font-medium text-fg-3">Day {day.day + 1}</p>
-                <span className="text-label text-fg-3">{day.completed}/{day.total}</span>
+                <p className="flex-1 text-small font-medium text-fg-2">Day {day.day + 1}</p>
+                <span className="tnum text-label text-fg-3">{day.completed}/{day.total}</span>
               </Link>
             );
           }
@@ -193,8 +199,14 @@ export default async function LearnDashboard() {
               }`}
               style={{ ["--stagger-i" as string]: i + 3 }}
             >
-              <div className="flex items-center gap-3">
-                <CheckNode done={done} />
+              <div className="flex items-center gap-4">
+                <span
+                  className={`tnum w-12 font-display text-h2 font-bold leading-none tracking-display ${
+                    isToday ? "text-emerald" : "text-fg-3/40"
+                  }`}
+                >
+                  {numeral}
+                </span>
                 <div>
                   <p className="font-display font-bold text-fg">
                     Day {day.day + 1}
@@ -212,7 +224,7 @@ export default async function LearnDashboard() {
                   </div>
                 </div>
               </div>
-              <span className="text-label text-fg-3">
+              <span className="tnum text-label text-fg-3">
                 {day.completed}/{day.total}
               </span>
             </Link>
@@ -222,16 +234,20 @@ export default async function LearnDashboard() {
               className="rise flex items-center justify-between rounded-card bg-surface-muted p-4"
               style={{ ["--stagger-i" as string]: i + 3 }}
             >
-              <div className="flex items-center gap-3">
-                <CheckNode done={false} locked />
+              <div className="flex items-center gap-4">
+                <span className="tnum w-12 font-display text-h2 font-bold leading-none tracking-display text-fg-3/30">
+                  {numeral}
+                </span>
                 <div>
-                  <p className="font-display font-bold text-fg-3">Day {day.day + 1}</p>
+                  <p className="font-display font-bold text-fg-2">Day {day.day + 1}</p>
                   <p className="text-label text-fg-3">
                     Unlocks {IST_DATE.format(unlockDate(day.day, batch.starts_on))}
                   </p>
                 </div>
               </div>
-              {nextToUnlock && <span aria-hidden className="live-dot text-fg-3">🔒</span>}
+              <span className={nextToUnlock ? "live-dot text-fg-3" : "text-fg-3"}>
+                <LockIcon />
+              </span>
             </div>
           );
         })}

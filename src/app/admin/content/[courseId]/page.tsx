@@ -5,7 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-const TYPE_BADGE: Record<string, string> = { video: "▶ video", text: "📄 text", task: "✏️ task" };
+const TYPE_BADGE: Record<string, string> = { video: "video", text: "text", task: "task" };
 
 export default async function CourseTree({
   params,

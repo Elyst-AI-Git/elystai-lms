@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { LessonTypeIcon } from "@/components/learn/lesson-icon";
 import { Markdown } from "@/components/learn/markdown";
 import { MarkDoneBar } from "@/components/learn/mark-done-button";
 import { SubmissionForm } from "@/components/learn/submission-form";
@@ -146,7 +147,9 @@ export default async function LessonView({
         <>
           {lesson.task_instructions && (
             <div className="rise rounded-card border-l-4 border-green bg-white p-5 shadow-card" style={{ ["--stagger-i" as string]: 2 }}>
-              <p className="mb-2 text-label font-bold uppercase tracking-wide text-emerald">✏️ Your task</p>
+              <p className="mb-2 flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-emerald">
+                <LessonTypeIcon type="task" className="h-3.5 w-3.5" /> Your task
+              </p>
               <Markdown>{lesson.task_instructions}</Markdown>
             </div>
           )}

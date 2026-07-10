@@ -1,3 +1,4 @@
+import { ResourceKindIcon } from "@/components/learn/lesson-icon";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { DEFAULT_COURSE_SLUG } from "@/lib/lms/constants";
 import { LMS_EVENTS } from "@/lib/lms/events";
@@ -6,13 +7,6 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-const KIND_ICON: Record<string, string> = {
-  link: "🔗",
-  file: "📎",
-  template: "📋",
-  video: "▶",
-  doc: "📄",
-};
 
 export default async function VaultPage() {
   const { user, enrollment, course } = await requireEnrollment(DEFAULT_COURSE_SLUG);
@@ -82,8 +76,8 @@ export default async function VaultPage() {
               className="pressable rise flex items-center gap-3 rounded-card bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
               style={{ ["--stagger-i" as string]: gi * 3 + i }}
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-small" aria-hidden>
-                {KIND_ICON[r.kind] ?? "🔗"}
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald">
+                <ResourceKindIcon kind={r.kind} />
               </span>
               <p className="min-w-0 flex-1 truncate font-medium text-fg">{r.title}</p>
               {batchOnlyIds.has(r.id) && (

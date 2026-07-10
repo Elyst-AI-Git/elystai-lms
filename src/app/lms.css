@@ -91,6 +91,11 @@
   color: var(--fg-on-dark, #f4f7f5);
 }
 
+/* --- tabular figures for counts, percents, timers ------------------------- */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
 /* --- reading typography for lesson bodies -------------------------------- */
 .lesson-prose {
   font-size: var(--text-body);

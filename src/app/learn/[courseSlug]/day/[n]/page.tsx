@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckNode } from "@/components/learn/check-node";
+import { LessonTypeIcon } from "@/components/learn/lesson-icon";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { isUnlocked, unlockDate } from "@/lib/lms/drip";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -114,7 +115,8 @@ export default async function DayView({
                   <p className={`font-display font-bold ${clickable ? "text-fg" : "text-fg-3"}`}>
                     {lesson.title}
                   </p>
-                  <p className="mt-0.5 text-label text-fg-3">
+                  <p className="mt-1 flex items-center gap-1.5 text-label text-fg-3">
+                    <LessonTypeIcon type={lesson.content_type} className="h-3.5 w-3.5" />
                     {TYPE_LABEL[lesson.content_type] ?? lesson.content_type}
                     {duration ? ` · ${duration}` : ""}
                     {lesson.is_preview && !unlocked ? " · free preview" : ""}
