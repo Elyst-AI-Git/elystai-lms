@@ -1,0 +1,122 @@
+/*
+  LMS motion + surface utilities (design overhaul D1).
+  Brand globals.css stays verbatim from elyst-website; everything the LMS
+  adds lives here. All motion: transform/opacity only, <300ms, strong
+  ease-out, reduced-motion respected.
+*/
+
+:root {
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* --- press feedback: every tappable LMS element ------------------------- */
+.pressable {
+  transition: transform 160ms var(--ease-out-strong);
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+
+/* --- list entrance: stagger via inline --stagger-i ----------------------- */
+@keyframes lms-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  opacity: 0;
+  animation: lms-rise 300ms var(--ease-out-strong) forwards;
+  animation-delay: calc(var(--stagger-i, 0) * 40ms);
+}
+
+/* --- progress ring / bars: animate once on mount ------------------------- */
+@keyframes lms-ring {
+  from {
+    stroke-dashoffset: var(--ring-circumference);
+  }
+}
+.ring-progress {
+  animation: lms-ring 600ms var(--ease-out-strong);
+}
+
+@keyframes lms-bar {
+  from {
+    transform: scaleX(0);
+  }
+}
+.bar-progress {
+  transform-origin: left;
+  animation: lms-bar 600ms var(--ease-out-strong);
+}
+
+/* --- checkmark stroke draw (completion) ---------------------------------- */
+@keyframes lms-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.check-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: lms-draw 300ms var(--ease-out-strong) forwards;
+}
+
+/* --- live session pulse dot ---------------------------------------------- */
+@keyframes lms-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+.live-dot {
+  animation: lms-pulse 2s ease-in-out infinite;
+}
+
+/* --- dark hero surface (brand --surface-dark, marketing-site pattern) ---- */
+.surface-dark-hero {
+  background:
+    radial-gradient(120% 140% at 85% -20%, rgba(0, 223, 130, 0.16) 0%, transparent 55%),
+    linear-gradient(150deg, var(--surface-dark-2, #0b1512) 0%, var(--surface-dark, #060d09) 100%);
+  color: var(--fg-on-dark, #f4f7f5);
+}
+
+/* --- reading typography for lesson bodies -------------------------------- */
+.lesson-prose {
+  font-size: var(--text-body);
+  line-height: 1.7;
+  color: var(--fg-2);
+}
+.lesson-prose > * + * {
+  margin-top: 1.25em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+  .ring-progress,
+  .bar-progress,
+  .check-draw {
+    animation-duration: 1ms;
+  }
+  .live-dot {
+    animation: none;
+  }
+  .pressable,
+  .pressable:active {
+    transition: none;
+    transform: none;
+  }
+}

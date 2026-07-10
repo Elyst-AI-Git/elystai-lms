@@ -6,6 +6,14 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
+const KIND_ICON: Record<string, string> = {
+  link: "🔗",
+  file: "📎",
+  template: "📋",
+  video: "▶",
+  doc: "📄",
+};
+
 export default async function VaultPage() {
   const { user, enrollment, course } = await requireEnrollment(DEFAULT_COURSE_SLUG);
 
@@ -15,7 +23,7 @@ export default async function VaultPage() {
   const { data: resources } = await supabase
     .schema("app")
     .from("resources")
-    .select("id, title, url_or_storage_path, kind, sort_order, module_id, modules(title, position)")
+    .select("id, title, url_or_storage_path, kind, sort_order, module_id, batch_id, modules(title, position)")
     .eq("course_id", course.id)
     .order("sort_order", { ascending: true });
 
@@ -32,9 +40,11 @@ export default async function VaultPage() {
     kind: string;
     sort_order: number;
     module_id: string | null;
+    batch_id: string | null;
     modules: { title: string; position: number } | { title: string; position: number }[] | null;
   }
   const rows = (resources ?? []) as ResourceRow[];
+  const batchOnlyIds = new Set(rows.filter((r) => r.batch_id).map((r) => r.id));
   const groups = new Map<string, { title: string; position: number; items: ResourceRow[] }>();
   for (const r of rows) {
     const moduleRow = Array.isArray(r.modules) ? r.modules[0] : r.modules;
@@ -55,23 +65,32 @@ export default async function VaultPage() {
       {sorted.length === 0 && (
         <p className="text-small text-fg-3">Resources will appear here as the course progresses.</p>
       )}
-      {sorted.map((group) => (
+      {sorted.map((group, gi) => (
         <section key={group.title} className="space-y-2">
-          <h2 className="text-small font-semibold uppercase tracking-wide text-emerald">
-            {group.title}
-          </h2>
-          {group.items.map((r) => (
+          <div className="flex items-center gap-3">
+            <h2 className="shrink-0 text-eyebrow font-semibold uppercase tracking-wide text-emerald">
+              {group.title}
+            </h2>
+            <span className="h-px flex-1 bg-border" aria-hidden />
+          </div>
+          {group.items.map((r, i) => (
             <a
               key={r.id}
               href={r.url_or_storage_path}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between rounded-card bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
+              className="pressable rise flex items-center gap-3 rounded-card bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
+              style={{ ["--stagger-i" as string]: gi * 3 + i }}
             >
-              <p className="font-medium text-fg">{r.title}</p>
-              <span className="rounded-pill bg-surface-muted px-2.5 py-1 text-micro font-semibold uppercase tracking-wide text-fg-3">
-                {r.kind}
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-small" aria-hidden>
+                {KIND_ICON[r.kind] ?? "🔗"}
               </span>
+              <p className="min-w-0 flex-1 truncate font-medium text-fg">{r.title}</p>
+              {batchOnlyIds.has(r.id) && (
+                <span className="rounded-pill bg-green/15 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald">
+                  your batch
+                </span>
+              )}
             </a>
           ))}
         </section>

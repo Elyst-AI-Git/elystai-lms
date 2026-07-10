@@ -33,7 +33,7 @@ export function VideoEmbed({ lessonId, embedUrl }: { lessonId: string; embedUrl:
   }, [lessonId]);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-card bg-ink shadow-card" style={{ aspectRatio: "16 / 9" }}>
+    <div className="relative w-full bg-ink" style={{ aspectRatio: "16 / 9" }}>
       <iframe
         src={embedUrl}
         loading="lazy"
