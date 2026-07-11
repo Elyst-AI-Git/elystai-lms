@@ -2,6 +2,12 @@ import { Check, CircleCheckBig, Clock3, LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import { LessonTypeIcon } from "@/components/learn/lesson-icon";
 import { NextLessonCard } from "@/components/learn/next-lesson-card";
+import {
+  formatDurationLabel,
+  planHeadline,
+  queuedLessons as selectQueuedLessons,
+  selectNextLesson,
+} from "@/lib/lms/plan";
 
 type LessonSummary = {
   id: string;
@@ -13,11 +19,6 @@ type LessonSummary = {
 };
 
 const TYPE_LABEL: Record<string, string> = { video: "Watch", text: "Read", task: "Build" };
-
-function formatDuration(seconds: number | null): string | null {
-  if (!seconds) return null;
-  return `${Math.max(1, Math.round(seconds / 60))} min`;
-}
 
 export function LearningPlanCanvas({
   courseSlug,
@@ -31,26 +32,18 @@ export function LearningPlanCanvas({
   today: number;
 }) {
   const completed = new Set(completedLessonIds);
-  const nextLesson = lessons.find((lesson) => !completed.has(lesson.id));
-  const nextLessonIndex = nextLesson ? lessons.findIndex((lesson) => lesson.id === nextLesson.id) : -1;
-  const queuedLessons = nextLessonIndex >= 0 ? lessons.slice(nextLessonIndex + 1, nextLessonIndex + 4) : [];
-  const catchingUp = Boolean(nextLesson && today >= 0 && nextLesson.unlock_day_offset < today);
-  const previewAhead = Boolean(nextLesson && nextLesson.is_preview && nextLesson.unlock_day_offset > today);
+  const nextLesson = selectNextLesson(lessons, completedLessonIds);
+  const queuedLessons = nextLesson ? selectQueuedLessons(lessons, nextLesson.id) : [];
+  const { headline, badge } = planHeadline(nextLesson, today);
 
   return (
     <section aria-labelledby="learning-plan-heading" className="rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="eyebrow text-emerald">Your learning plan</p>
-          <h2 id="learning-plan-heading" className="mt-1 text-h3 text-fg">
-            {previewAhead && nextLesson
-              ? `Preview available for Day ${nextLesson.unlock_day_offset + 1}.`
-              : catchingUp && nextLesson
-                ? `Continue with Day ${nextLesson.unlock_day_offset + 1}.`
-                : "Today&apos;s focused work."}
-          </h2>
+          <h2 id="learning-plan-heading" className="mt-1 text-h3 text-fg">{headline}</h2>
         </div>
-        {(previewAhead || today >= 0) && <span className="rounded-pill bg-emerald/10 px-3 py-1.5 text-label font-bold text-emerald">{previewAhead ? "Preview" : catchingUp ? "Catching up" : `Day ${today + 1}`}</span>}
+        {badge && <span className="rounded-pill bg-emerald/10 px-3 py-1.5 text-label font-bold text-emerald">{badge}</span>}
       </div>
 
       {nextLesson ? (
@@ -63,7 +56,7 @@ export function LearningPlanCanvas({
                 {queuedLessons.map((lesson, index) => {
                   const isDone = completed.has(lesson.id);
                   const isNext = lesson.id === nextLesson.id;
-                  const duration = formatDuration(lesson.duration_seconds);
+                  const duration = formatDurationLabel(lesson.duration_seconds);
                   return (
                     <li className="flex min-h-16 items-center gap-3 py-2" key={lesson.id}>
                       <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-pill text-label font-bold ${isDone ? "bg-emerald text-fg-on-dark" : isNext ? "bg-green text-ink" : "bg-white text-fg-2"}`}>

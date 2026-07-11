@@ -1,5 +1,6 @@
 import { ArrowRight, Check, ChevronDown, LockKeyhole } from "lucide-react";
 import Link from "next/link";
+import { partitionDays } from "@/lib/lms/plan";
 import type { DayProgress } from "@/lib/lms/progress";
 
 type CoursePathProps = {
@@ -45,9 +46,7 @@ function DayRow({
 }
 
 export function CoursePath({ courseSlug, perDay, today }: CoursePathProps) {
-  const availableDays = perDay.filter((day) => day.day <= today);
-  const futureDays = perDay.filter((day) => day.day > today);
-  const completedDays = availableDays.filter((day) => day.total > 0 && day.completed === day.total).length;
+  const { available: availableDays, future: futureDays, completedDays } = partitionDays(perDay, today);
 
   return (
     <section aria-labelledby="course-path-heading" className="rounded-card border border-border bg-white p-4 shadow-card sm:p-5">

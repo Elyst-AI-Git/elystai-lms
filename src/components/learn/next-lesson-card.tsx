@@ -1,6 +1,7 @@
 import { ArrowRight, Clock3 } from "lucide-react";
 import Link from "next/link";
 import { LessonTypeIcon } from "@/components/learn/lesson-icon";
+import { formatDurationLabel } from "@/lib/lms/plan";
 
 type NextLesson = {
   id: string;
@@ -16,11 +17,6 @@ const TYPE_LABEL: Record<string, string> = {
   task: "Build",
 };
 
-function formatDuration(seconds: number | null): string | null {
-  if (!seconds) return null;
-  return `${Math.max(1, Math.round(seconds / 60))} min`;
-}
-
 export function NextLessonCard({
   courseSlug,
   headingLevel = "h2",
@@ -30,7 +26,7 @@ export function NextLessonCard({
   headingLevel?: "h2" | "h3";
   lesson: NextLesson;
 }) {
-  const duration = formatDuration(lesson.duration_seconds);
+  const duration = formatDurationLabel(lesson.duration_seconds);
   const Heading = headingLevel;
 
   return (
