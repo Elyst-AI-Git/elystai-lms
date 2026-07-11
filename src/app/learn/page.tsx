@@ -11,10 +11,12 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 function StatCard({ icon, label, value, tone }: { icon: React.ReactNode; label: string; value: string; tone: string }) {
-  return <div className={`grid min-w-0 grid-rows-[3rem_auto_auto] rounded-card border border-border p-3 sm:p-4 ${tone}`}>
+  // Fixed slots for icon AND label so the three value lines share one
+  // baseline even when a label wraps to two lines at narrow widths.
+  return <div className={`grid min-w-0 grid-rows-[3rem_minmax(3rem,auto)_auto] rounded-card border border-border p-3 sm:p-4 ${tone}`}>
     <div className="flex h-12 items-center">{icon}</div>
-    <p className="min-w-0 text-micro font-bold uppercase tracking-wide text-fg-3">{label}</p>
-    <p className="mt-1 min-w-0 text-small font-bold text-fg">{value}</p>
+    <p className="min-w-0 self-start text-micro font-bold uppercase tracking-wide text-fg-3">{label}</p>
+    <p className="mt-1 min-w-0 self-end text-small font-bold text-fg">{value}</p>
   </div>;
 }
 
@@ -59,7 +61,7 @@ export default async function LearnDashboard() {
         <StatCard icon={<CalendarDays className="h-6 w-6 text-emerald" aria-hidden />} label="Cohort rhythm" value={today >= 0 ? `Day ${today + 1} of ${progress.perDay.length}` : `Day 1 of ${progress.perDay.length}`} tone="bg-green/10" />
       </section>
 
-      <div className="order-3 grid min-w-0 gap-6 lg:h-[34rem] lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="order-3 grid min-w-0 gap-6 lg:h-[max(28.5rem,calc(100dvh-26rem))] lg:grid-cols-[minmax(0,1fr)_20rem] lg:grid-rows-[minmax(0,1fr)]">
         <div className="rise lg:h-full" style={{ ["--stagger-i" as string]: 2 }}>
           <LearningPlanCanvas courseSlug={course.slug} completedLessonIds={completedLessonIds} lessons={allLessons} today={today} />
         </div>

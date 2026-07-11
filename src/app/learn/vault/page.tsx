@@ -71,7 +71,7 @@ export default async function VaultPage() {
           <h1 className="mt-1 text-h1 text-fg">Resource library</h1>
           <p className="mt-2 text-small text-fg-2">Useful templates, recordings, and reference material - organised by your learning plan.</p>
         </div>
-        <span className="rounded-md bg-emerald/10 px-3 py-1.5 text-label font-bold text-emerald">{resourceCount} resources</span>
+        <span className="rounded-md bg-emerald/10 px-3 py-1.5 text-label font-bold text-emerald">{resourceCount} {resourceCount === 1 ? "resource" : "resources"}</span>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_15rem]">
@@ -88,7 +88,7 @@ export default async function VaultPage() {
                   <p className="eyebrow text-emerald">{locked ? "Unlocks with your cohort" : "Learning area"}</p>
                   <h2 className="mt-1 text-h3 text-fg">{group.title}</h2>
                 </div>
-                {locked ? <LockKeyhole className="h-6 w-6 text-fg-3" aria-label="Locked" /> : <span className="hidden text-label font-bold text-fg-3 sm:block">{group.items.length} resources</span>}
+                {locked ? <LockKeyhole className="h-6 w-6 text-fg-3" aria-label="Locked" /> : <span className="hidden text-label font-bold text-fg-3 sm:block">{group.items.length} {group.items.length === 1 ? "resource" : "resources"}</span>}
               </div>
               {!locked && <div className="mt-4 divide-y divide-border">
                 {group.items.map((resource) => (
