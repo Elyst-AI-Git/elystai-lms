@@ -21,8 +21,17 @@ function formatDuration(seconds: number | null): string | null {
   return `${Math.max(1, Math.round(seconds / 60))} min`;
 }
 
-export function NextLessonCard({ courseSlug, lesson }: { courseSlug: string; lesson: NextLesson }) {
+export function NextLessonCard({
+  courseSlug,
+  headingLevel = "h2",
+  lesson,
+}: {
+  courseSlug: string;
+  headingLevel?: "h2" | "h3";
+  lesson: NextLesson;
+}) {
   const duration = formatDuration(lesson.duration_seconds);
+  const Heading = headingLevel;
 
   return (
     <section aria-labelledby="next-lesson-heading" className="rounded-card bg-emerald p-5 text-fg-on-dark shadow-card sm:p-6">
@@ -33,9 +42,9 @@ export function NextLessonCard({ courseSlug, lesson }: { courseSlug: string; les
         Your next step
       </div>
       <p className="mt-4 text-label font-semibold text-fg-muted-dark">Day {lesson.unlock_day_offset + 1}</p>
-      <h2 id="next-lesson-heading" className="mt-1 font-display text-h3 font-bold tracking-display">
+      <Heading id="next-lesson-heading" className="mt-1 font-display text-h3 font-bold tracking-display">
         {lesson.title}
-      </h2>
+      </Heading>
       <p className="mt-2 flex items-center gap-2 text-label text-fg-muted-dark">
         {TYPE_LABEL[lesson.content_type] ?? "Lesson"}
         {duration && (

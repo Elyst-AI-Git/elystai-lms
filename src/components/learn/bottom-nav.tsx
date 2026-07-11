@@ -20,7 +20,7 @@ export function BottomNav() {
   if (pathname.includes("/lesson/")) return null;
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)]"
+      className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="Primary"
     >
       <div className="flex items-center gap-1 rounded-pill border border-border bg-white/90 p-1.5 shadow-card-hover backdrop-blur">
