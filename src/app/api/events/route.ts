@@ -3,10 +3,14 @@ import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent, normalizeCorrelationId } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-const AUTH_EVENTS = new Set([
+const AUTH_EVENTS = [
   LMS_EVENTS.learner.auth.loginSucceeded,
   LMS_EVENTS.learner.auth.loginFailed,
-]);
+] as const;
+
+function isAuthEvent(event: unknown): event is (typeof AUTH_EVENTS)[number] {
+  return typeof event === "string" && (AUTH_EVENTS as readonly string[]).includes(event);
+}
 
 /** Logs the small, allowlisted set of auth events emitted by the login UI. */
 export async function POST(request: NextRequest) {
@@ -17,7 +21,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (typeof body.event !== "string" || !AUTH_EVENTS.has(body.event)) {
+  if (!isAuthEvent(body.event)) {
     return NextResponse.json({ error: "Unsupported event" }, { status: 400 });
   }
 
