@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { ArrowRight, LogIn, Mail, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import {
   InputOTP,
   InputOTPGroup,
@@ -206,23 +207,19 @@ export function LoginForm({ oauthError }: LoginFormProps) {
           </p>
         </section>
 
-        <aside className="surface-dark-hero relative order-first min-h-64 overflow-hidden p-6 sm:p-8 lg:order-none lg:min-h-full lg:p-12">
-          <div aria-hidden className="absolute inset-0 flex justify-end gap-3 px-8 opacity-80 sm:gap-5 lg:gap-7">
-            {Array.from({ length: 7 }, (_, index) => (
-              <span
-                className="w-4 -skew-x-6 bg-gradient-to-b from-green/10 via-green/50 to-white/10 blur-[1px] sm:w-6 lg:w-8"
-                key={index}
-              />
-            ))}
-          </div>
-          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface-dark via-surface-dark/50 to-transparent" aria-hidden />
-          <div className="relative z-10 flex h-full min-h-52 flex-col justify-end">
-            <p className="eyebrow text-green">A focused cohort experience</p>
-            <p className="mt-3 max-w-md font-display text-h2 font-bold tracking-display text-fg-on-dark">
-              Turn AI ambition into a daily practice.
-            </p>
-            <p className="mt-3 max-w-sm text-small text-fg-muted-dark">
-              Clear lessons, live sessions, and practical momentum — all in one calm workspace.
+        <aside className="relative hidden overflow-hidden bg-surface-muted lg:block lg:min-h-full">
+          <Image
+            alt=""
+            className="object-cover object-center -rotate-180 scale-110"
+            fill
+            priority
+            sizes="(max-width: 1023px) 100vw, 55vw"
+            src="/hero-bg copy.jpg"
+          />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/90 to-transparent p-12 pt-28">
+            <p className="eyebrow text-emerald">AI for Work</p>
+            <p className="mt-3 max-w-md font-display text-h2 font-bold tracking-display text-fg">
+              Make AI useful in the work you already do.
             </p>
           </div>
         </aside>
