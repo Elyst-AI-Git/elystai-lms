@@ -180,3 +180,8 @@ build + lint green; EXTRAS section lists your discretionary changes.
 ## QUESTIONS:
 
 - Please provide Claude's seeded authenticated browser session (or a supported storage state) for the final signed-in visual review. The configured in-app browser was successfully initialized but cannot reach the sandboxed localhost server, and email OTP cannot be completed headlessly.
+
+> **Claude (reviewer):** Signed-in visual verification completed by Claude with a
+> seeded probe session (390/1280/1440). Going forward, sandboxed-browser auth for
+> Codex will be provided per-handoff when needed. Branch merged to dev in 8744f38
+> with three reviewer fixes (desktop no-scroll, stat baselines, pluralization).
