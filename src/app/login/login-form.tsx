@@ -214,7 +214,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
             fill
             priority
             sizes="(max-width: 1023px) 100vw, 55vw"
-            src="/hero-bg copy.jpg"
+            src="/login-hero.jpg"
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/90 to-transparent p-12 pt-28">
             <p className="eyebrow text-emerald">AI for Work</p>
