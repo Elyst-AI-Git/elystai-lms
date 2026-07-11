@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, LogOut } from "lucide-react";
 import Link from "next/link";
 import { CheckNode } from "@/components/learn/check-node";
 import { LessonTypeIcon, LockIcon } from "@/components/learn/lesson-icon";
@@ -252,6 +252,12 @@ export default async function LearnDashboard() {
           );
         })}
       </section>
+      <form action="/api/auth/signout" className="pt-3 text-center" method="post">
+        <button className="inline-flex min-h-11 items-center gap-2 px-3 text-label font-semibold text-fg-3 underline-offset-4 hover:text-emerald hover:underline" type="submit">
+          <LogOut className="h-4 w-4" aria-hidden />
+          Sign out
+        </button>
+      </form>
     </div>
   );
 }

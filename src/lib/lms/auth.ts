@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
+import { resolveAccess, type EnrollmentLike } from "@/lib/lms/access";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
@@ -28,19 +29,19 @@ export interface EnrollmentContext {
   };
 }
 
-/** Redirects to /register when there is no authenticated user. */
+/** Redirects to /login when there is no authenticated user. */
 export async function requireUser(): Promise<User> {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/register");
+  if (!user) redirect("/login");
   return user;
 }
 
 /**
  * Returns the user's ACTIVE enrollment (+ batch + course) for the course, or
- * redirects to the course landing page. If several active enrollments exist
+ * redirects to the no-access page. If several active enrollments exist
  * (spec A2 edge case), picks the most recent.
  */
 export async function requireEnrollment(
@@ -62,13 +63,22 @@ export async function requireEnrollment(
     .from("enrollments")
     .select("id, batch_id, status, created_at, batches!inner(id, course_id, name, starts_on)")
     .eq("profile_id", user.id)
-    .eq("status", "active")
-    .eq("batches.course_id", course.id)
-    .order("created_at", { ascending: false })
-    .limit(1);
+    .order("created_at", { ascending: false });
 
-  const enrollment = enrollments?.[0];
-  if (!enrollment) redirect(`/${courseSlug}`);
+  const accessEnrollments: EnrollmentLike[] = (enrollments ?? []).flatMap((entry) => {
+    const batch = Array.isArray(entry.batches) ? entry.batches[0] : entry.batches;
+    return batch ? [{ status: entry.status, batch: { course_id: batch.course_id } }] : [];
+  });
+
+  if (resolveAccess(true, accessEnrollments, course.id) !== "ok") {
+    redirect("/no-access");
+  }
+
+  const enrollment = (enrollments ?? []).find((entry) => {
+    const batch = Array.isArray(entry.batches) ? entry.batches[0] : entry.batches;
+    return entry.status === "active" && batch?.course_id === course.id;
+  });
+  if (!enrollment) redirect("/no-access");
 
   const batch = Array.isArray(enrollment.batches)
     ? enrollment.batches[0]
