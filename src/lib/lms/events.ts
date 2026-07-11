@@ -7,6 +7,11 @@
  */
 export const LMS_EVENTS = {
   learner: {
+    auth: {
+      loginSucceeded: "learner.auth.login_succeeded",
+      loginFailed: "learner.auth.login_failed",
+      signedOut: "learner.auth.signed_out",
+    },
     lesson: {
       viewed: "learner.lesson.viewed",
       completed: "learner.lesson.completed",
