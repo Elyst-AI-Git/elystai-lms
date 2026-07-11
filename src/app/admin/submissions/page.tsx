@@ -40,7 +40,7 @@ export default async function AdminSubmissions({
   if (filter !== "all") query = query.eq("status", filter!);
   const { data: submissions } = await query;
 
-  // profiles live in public — cross-schema embed unsupported, fetch separately
+  // profiles live in public - cross-schema embed unsupported, fetch separately
   const profileIds = [
     ...new Set(
       (submissions ?? [])

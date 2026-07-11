@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 /**
- * SVG icon language for the LMS (no emoji as structural icons — one icon
+ * SVG icon language for the LMS (no emoji as structural icons - one icon
  * family, consistent stroke). Lesson content types + vault resource kinds.
  */
 export function LessonTypeIcon({

@@ -13,7 +13,7 @@ export default async function AdminProgress() {
     .eq("status", "active")
     .order("created_at", { ascending: true });
 
-  // profiles live in public — PostgREST can't embed across schemas, so join here
+  // profiles live in public - PostgREST can't embed across schemas, so join here
   const profileIds = (enrollments ?? []).map((e) => e.profile_id);
   const { data: profiles } = profileIds.length
     ? await admin.from("profiles").select("id, full_name, email").in("id", profileIds)
@@ -59,7 +59,7 @@ export default async function AdminProgress() {
             {rows.map((r) => (
               <tr key={r.id} className="border-b border-border/50 last:border-0">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-fg">{r.profile?.full_name ?? "—"}</p>
+                  <p className="font-medium text-fg">{r.profile?.full_name ?? "-"}</p>
                   <p className="text-label text-fg-3">{r.profile?.email}</p>
                 </td>
                 <td className="px-4 py-3 text-fg-2">{r.batch?.name}</td>

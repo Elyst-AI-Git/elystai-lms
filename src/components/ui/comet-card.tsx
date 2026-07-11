@@ -81,7 +81,7 @@ export const CometCard = ({
     y.set(0);
   };
 
-  // On touch devices there's no cursor to drive the 3D tilt/glare — render a
+  // On touch devices there's no cursor to drive the 3D tilt/glare - render a
   // plain static card instead of mounting the spring/transform machinery.
   if (isTouch) {
     return (

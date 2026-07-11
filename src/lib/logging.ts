@@ -6,7 +6,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase/server";
  * Design goals (see docs/qa/03-logging-design.md):
  *   - One correlation_id per journey, stitched across client milestones, the
  *     server API routes, and the Razorpay webhook (recovered from order notes).
- *   - Structured rows, not free-text — queryable and joinable to payments.
+ *   - Structured rows, not free-text - queryable and joinable to payments.
  *   - BEST EFFORT: logging must NEVER break the payment flow. Every call is
  *     fire-and-forget and swallows its own errors. A failed insert logs to
  *     stdout and returns; it does not throw into the caller.

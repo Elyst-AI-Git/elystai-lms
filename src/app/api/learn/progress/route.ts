@@ -6,7 +6,7 @@ import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * POST { lessonId, completed } — mark or un-mark a lesson (spec D3).
+ * POST { lessonId, completed } - mark or un-mark a lesson (spec D3).
  * Writes go through the USER client so lesson_progress RLS is exercised;
  * drip is enforced app-side here (RLS covers enrollment, drip is pacing).
  */

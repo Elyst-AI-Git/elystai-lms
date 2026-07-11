@@ -5,7 +5,7 @@ import rehypeSanitize from "rehype-sanitize";
 /**
  * Sanitized markdown renderer for lesson bodies (spec A5). No raw HTML
  * pass-through: react-markdown ignores raw HTML by default and
- * rehype-sanitize scrubs anything that slips in — the plan's XSS mitigation.
+ * rehype-sanitize scrubs anything that slips in - the plan's XSS mitigation.
  */
 export function Markdown({ children }: { children: string }) {
   return (

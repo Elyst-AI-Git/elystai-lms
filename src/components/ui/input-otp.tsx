@@ -8,7 +8,7 @@ type InputOTPContextValue = {
   maxLength: number;
   setSlotRef: (index: number, node: HTMLInputElement | null) => void;
   updateValue: (index: number, value: string) => void;
-  // Fixed-width per-slot chars (index i = slot i), NOT a collapsed string —
+  // Fixed-width per-slot chars (index i = slot i), NOT a collapsed string -
   // joining would lose empty-slot positions and shift rendering out of sync
   // with what updateValue writes by index.
   slots: string[];
@@ -54,7 +54,7 @@ export function InputOTP({
 }: InputOTPProps) {
   // Per-slot state is the source of truth for rendering, kept ALWAYS at a
   // fixed width. Serializing to a plain string (for onChange / the `value`
-  // prop) only happens at the edges, never mid-edit — that's what previously
+  // prop) only happens at the edges, never mid-edit - that's what previously
   // let editing an arbitrary slot compact the string and shift every digit
   // after it left by one position.
   const [slots, setSlots] = React.useState<string[]>(() => toSlots(value ?? defaultValue, maxLength));

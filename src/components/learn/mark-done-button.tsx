@@ -6,7 +6,7 @@ import * as React from "react";
 
 /**
  * Sticky bottom completion bar (design overhaul D3). Marking complete morphs
- * the button into a drawn checkmark state and reveals "Next lesson" — the
+ * the button into a drawn checkmark state and reveals "Next lesson" - the
  * app's one earned flourish, kept under 300ms per interaction.
  */
 export function MarkDoneBar({
@@ -50,7 +50,7 @@ export function MarkDoneBar({
   }
 
   return (
-    <div className="sticky bottom-0 z-30 -mx-4 mt-8 border-t border-border bg-bg/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur">
+    <div className="mt-8 border-t border-border pt-4">
       {error && <p className="mb-2 text-label text-destructive">{error}</p>}
       <div className="mx-auto flex max-w-3xl items-center gap-3">
         {completed ? (

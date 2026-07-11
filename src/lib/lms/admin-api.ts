@@ -14,7 +14,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase/server";
  */
 export function makeAdminCrudHandlers(options: {
   table: string;
-  /** Whitelisted writable columns — anything else in the body is dropped. */
+  /** Whitelisted writable columns - anything else in the body is dropped. */
   fields: string[];
   /** Column used by reorder (e.g. "position" or "sort_order"). */
   orderColumn?: string;

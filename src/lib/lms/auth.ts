@@ -4,7 +4,7 @@ import { resolveAccess, type EnrollmentLike } from "@/lib/lms/access";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * Per-request auth gates (spec D5): no middleware.ts — every /learn and
+ * Per-request auth gates (spec D5): no middleware.ts - every /learn and
  * /admin entry point calls one of these. They are convenience + UX; RLS
  * remains the real security boundary. Auth/enrollment state is never cached.
  */
@@ -114,7 +114,7 @@ export async function getUserOrNull(): Promise<User | null> {
 
 /**
  * Resolves the caller's ACTIVE enrollment for the course a lesson belongs
- * to — the ownership chain every learner mutation route needs. Null when the
+ * to - the ownership chain every learner mutation route needs. Null when the
  * lesson doesn't exist (or is invisible to the caller via RLS) or the caller
  * has no active enrollment.
  */
@@ -181,7 +181,7 @@ export async function isAdmin(): Promise<User | null> {
 
 /**
  * Admin gate (spec D8): membership in public.admin_users. Non-admins get a
- * 404, not a login hint — the admin surface should not advertise itself.
+ * 404, not a login hint - the admin surface should not advertise itself.
  */
 export async function requireAdmin(): Promise<User> {
   const supabase = await createServerSupabaseClient();

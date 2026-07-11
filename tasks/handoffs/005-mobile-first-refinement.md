@@ -175,8 +175,8 @@ build + lint green; EXTRAS section lists your discretionary changes.
 
 ## EXTRAS:
 
-(Codex: list your own improvements here.)
+- None beyond the explicitly requested refinement scope.
 
 ## QUESTIONS:
 
-(Codex: append questions here instead of guessing.)
+- Please provide Claude's seeded authenticated browser session (or a supported storage state) for the final signed-in visual review. The configured in-app browser was successfully initialized but cannot reach the sandboxed localhost server, and email OTP cannot be completed headlessly.

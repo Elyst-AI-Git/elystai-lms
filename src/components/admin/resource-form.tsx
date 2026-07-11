@@ -12,11 +12,13 @@ interface Option {
 export function ResourceForm({
   courseId,
   modules,
+  lessons,
   batches,
   count,
 }: {
   courseId: string;
   modules: Option[];
+  lessons: Option[];
   batches: Option[];
   count: number;
 }) {
@@ -31,9 +33,11 @@ export function ResourceForm({
     const problem = await adminFetch("/api/admin/content/resources", "POST", {
       course_id: courseId,
       title: String(data.get("title") ?? "").trim(),
+      description: String(data.get("description") ?? "").trim(),
       url_or_storage_path: String(data.get("url") ?? "").trim(),
       kind: String(data.get("kind") ?? "link"),
       module_id: String(data.get("module_id") ?? "") || "",
+      lesson_id: String(data.get("lesson_id") ?? "") || "",
       batch_id: String(data.get("batch_id") ?? "") || "",
       sort_order: count,
     });
@@ -48,6 +52,7 @@ export function ResourceForm({
   return (
     <form onSubmit={onSubmit} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <input name="title" placeholder="Title" required className={inputClass} />
+      <input name="description" placeholder="Description (optional)" className={inputClass} />
       <input name="url" type="url" placeholder="https://…" required className={inputClass} />
       <select name="kind" className={inputClass} defaultValue="link">
         {["link", "file", "template", "video", "doc"].map((k) => (
@@ -59,6 +64,10 @@ export function ResourceForm({
         {modules.map((m) => (
           <option key={m.id} value={m.id}>{m.label}</option>
         ))}
+      </select>
+      <select name="lesson_id" className={inputClass} defaultValue="">
+        <option value="">No lesson</option>
+        {lessons.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.label}</option>)}
       </select>
       <select name="batch_id" className={inputClass} defaultValue="">
         <option value="">All batches</option>

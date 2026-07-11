@@ -7,7 +7,7 @@ import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * POST multipart/form-data { lessonId, url?, note?, screenshot? } — create or
+ * POST multipart/form-data { lessonId, url?, note?, screenshot? } - create or
  * replace the caller's submission for a task lesson (spec A4/T4). At least a
  * URL or a screenshot is required (mirrors the DB check). The row is written
  * with the USER client (RLS enforced); the file goes through the server to
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     storagePath = await uploadSubmissionImage(ctx.enrollmentId, lessonId, file);
   }
 
-  // Replacing resets review state — the admin should re-review new content.
+  // Replacing resets review state - the admin should re-review new content.
   const row = {
     enrollment_id: ctx.enrollmentId,
     lesson_id: lessonId,

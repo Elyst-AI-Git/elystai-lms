@@ -160,7 +160,7 @@ function render() {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     // @ts-ignore
     // source-over (not "lighter") so the trail is visible against a WHITE
-    // background — "lighter" would blow out to invisible on white.
+    // background - "lighter" would blow out to invisible on white.
     ctx.globalCompositeOperation = "source-over";
     // @ts-ignore
     // Brand-locked dark-emerald trail (#03624C family): hue in the green band,
@@ -216,14 +216,14 @@ function onFocus() {
     // @ts-ignore
     ctx.running = true;
     // Guard against resuming before the first pointer event has seeded
-    // `lines` — render() indexes into it unconditionally.
+    // `lines` - render() indexes into it unconditionally.
     if (!lines.length) resetLines();
     render();
   }
 }
 function onBlur() {
   // Pause the loop when the window loses focus. The original set this to
-  // `true`, so it never actually paused — a needless CPU drain whenever the
+  // `true`, so it never actually paused - a needless CPU drain whenever the
   // tab/window was in the background.
   // @ts-ignore
   ctx.running = false;
@@ -249,7 +249,7 @@ export const renderCanvas = function () {
   resizeCanvas();
 
   // Return a teardown so the caller can stop the loop and detach every global
-  // listener on unmount — otherwise the RAF keeps painting a now-detached
+  // listener on unmount - otherwise the RAF keeps painting a now-detached
   // canvas and the document-level pointer listeners leak across navigations.
   return function cleanup() {
     // @ts-ignore

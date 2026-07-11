@@ -1,5 +1,5 @@
 /**
- * Event taxonomy for the LMS (spec D4). Dot-namespaced, append-only names —
+ * Event taxonomy for the LMS (spec D4). Dot-namespaced, append-only names -
  * every learner/admin mutation logs exactly one of these via logEvent().
  * Nothing in src/app may pass a string literal as an event name; only these
  * consts, so a future split into learning_events/audit_log stays a cheap

@@ -214,7 +214,7 @@ export const NoiseBackground = ({
         }}
       />
 
-      {/* Static Noise Pattern — self-hosted, tiled (was a 716KB external asset) */}
+      {/* Static Noise Pattern - self-hosted, tiled (was a 716KB external asset) */}
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden opacity-[var(--noise-opacity)]"
         style={{

@@ -1,5 +1,5 @@
 /**
- * Day-strip: one segment per course day — the primary progress read on the
+ * Day-strip: one segment per course day - the primary progress read on the
  * dashboard hero (green = day fully done, bright outline = today, dim = ahead).
  */
 import type { DayProgress } from "@/lib/lms/progress";

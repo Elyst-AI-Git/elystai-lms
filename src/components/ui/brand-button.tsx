@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * BrandButton — single reusable button for the whole site.
+ * BrandButton - single reusable button for the whole site.
  *
  * `variant="metal"` (default) renders the cult-ui MetalButton (liquid-metal ring)
  * filled with the brand emerald. `variant="outline"` renders a clean dark-green
@@ -41,7 +41,7 @@ const BASE =
   "inline-flex items-center justify-center gap-2 font-bold whitespace-nowrap " +
   "min-h-[48px] px-6 text-[length:var(--text-small)] leading-none";
 
-/* Shared corner radius — matches the small arrow-icon button in the FinalCta
+/* Shared corner radius - matches the small arrow-icon button in the FinalCta
    panels (rounded-md, ~6px), the site's reference "curve" for every button. */
 const RADIUS_CLASS = "rounded-md";
 const RADIUS_PX = 6;
@@ -129,7 +129,7 @@ export function BrandButton({
     );
   }
 
-  // Flat, solid filled button — no metal shader, no glow. Used in the CTA
+  // Flat, solid filled button - no metal shader, no glow. Used in the CTA
   // banners where a plain high-contrast action reads cleaner than the metal
   // ring. Tone picks the fill + a text colour with enough contrast on it.
   if (variant === "solid") {
@@ -166,7 +166,7 @@ export function BrandButton({
     fxFill = "bg-emerald! text-fg-on-dark! hover:bg-emerald-light!";
   }
 
-  // metal variant — emerald (default) / light-grey (Nav) / bright-green (See AIOS) fill.
+  // metal variant - emerald (default) / light-grey (Nav) / bright-green (See AIOS) fill.
   // The liquid-metal shader ring IS the effect; no outer glow.
 
   // MetalFx renders an animated liquid-metal shader behind every button. On
