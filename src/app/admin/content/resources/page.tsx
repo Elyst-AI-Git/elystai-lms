@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminResources() {
   const admin = createAdminSupabaseClient();
-  const [{ data: courses }, { data: resources }] = await Promise.all([
+  const [{ data: courses }, { data: resources }, { data: lessons }] = await Promise.all([
     admin
       .schema("app")
       .from("courses")
@@ -17,6 +17,7 @@ export default async function AdminResources() {
       .from("resources")
       .select("id, course_id, title, url_or_storage_path, kind, sort_order, module_id, batch_id, modules(title), batches(name)")
       .order("sort_order", { ascending: true }),
+    admin.schema("app").from("lessons").select("id, title, modules!inner(course_id)").order("unlock_day_offset", { ascending: true }).order("position", { ascending: true }),
   ]);
 
   return (
@@ -63,6 +64,10 @@ export default async function AdminResources() {
                 .sort((a, b) => a.position - b.position)
                 .map((m) => ({ id: m.id, label: m.title }))}
               batches={(course.batches ?? []).map((b) => ({ id: b.id, label: b.name }))}
+              lessons={(lessons ?? []).filter((lesson) => {
+                const moduleRow = Array.isArray(lesson.modules) ? lesson.modules[0] : lesson.modules;
+                return moduleRow?.course_id === course.id;
+              }).map((lesson) => ({ id: lesson.id, label: lesson.title }))}
               count={courseResources.length}
             />
           </section>

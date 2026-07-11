@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Manrope — self-hosted from public/fonts/manrope/ */
+/* Manrope - self-hosted from public/fonts/manrope/ */
 @font-face {
   font-family: 'Manrope';
   font-style: normal;
@@ -21,8 +21,8 @@
 }
 
 /*
-  Elyst AI — brand tokens wired from DESIGN.md (the locked constitution).
-  Light by default. Emerald only. No dark mode toggle — dark is a deliberate
+  Elyst AI - brand tokens wired from DESIGN.md (the locked constitution).
+  Light by default. Emerald only. No dark mode toggle - dark is a deliberate
   per-section surface (--surface-dark), never a global theme.
 */
 
@@ -102,7 +102,7 @@
 }
 
 :root {
-  /* Brand (LOCKED — DESIGN.md §2) */
+  /* Brand (LOCKED - DESIGN.md §2) */
   --elyst-emerald: #03624c;
   --elyst-emerald-light: #04855f;
   --elyst-green: #00df82;
@@ -110,7 +110,7 @@
   --elyst-ink: #060d09;
   --elyst-carbon: #1a1a1a;
 
-  /* Surfaces — light is default */
+  /* Surfaces - light is default */
   --bg: hsl(140 18% 97%);
   --surface-muted: hsl(145 14% 95%);
 
@@ -126,7 +126,7 @@
   --green-tint-15: rgba(0, 223, 130, 0.15);
   --emerald-tint-10: rgba(3, 98, 76, 0.1);
 
-  /* Legacy dark — deliberate single sections only */
+  /* Legacy dark - deliberate single sections only */
   --surface-dark: hsl(160 38% 9%);
   --surface-dark-2: hsl(157 32% 13%);
   --surface-dark-hover: hsl(155 32% 17%);
@@ -154,8 +154,8 @@
   --border: hsl(155 18% 88%);
   --input: hsl(155 18% 88%);
   --ring: var(--elyst-emerald);
-  --radius: 0.75rem; /* 12px — button radius */
-  /* GradientText animated-glow palette — brand greens (not the installer's rainbow). */
+  --radius: 0.75rem; /* 12px - button radius */
+  /* GradientText animated-glow palette - brand greens (not the installer's rainbow). */
   --color-1: hsl(157 100% 44%); --color-2: hsl(160 92% 27%); --color-3: hsl(142 62% 48%); --color-4: hsl(154 76% 71%); --color-5: hsl(165 94% 20%); --brand: hsl(157 100% 44%);
 }
 
@@ -186,7 +186,7 @@
   }
 }
 
-/* Component primitives (DESIGN.md §5) — build once, reuse everywhere */
+/* Component primitives (DESIGN.md §5) - build once, reuse everywhere */
 @layer components {
   .btn {
     display: inline-flex;
@@ -286,7 +286,7 @@
     border-radius: var(--radius-card);
   }
 
-  /* Footer Zone 2 — giant wordmark filled with a slow-shifting emerald
+  /* Footer Zone 2 - giant wordmark filled with a slow-shifting emerald
      gradient via background-clip:text (DESIGN.md footer NOTES). */
   .wordmark-fill {
     background-image: linear-gradient(
@@ -301,7 +301,7 @@
     color: transparent;
     animation: wordmark-shift 8s ease-in-out infinite;
   }
-  /* Hero "runs" — heavy, clearly-visible animated gradient word */
+  /* Hero "runs" - heavy, clearly-visible animated gradient word */
   .runs-word {
     background-image: linear-gradient(
       100deg,
@@ -327,7 +327,7 @@
   }
 
   /* On touch devices the shifting gradient is just a continuous repaint
-     nobody can interact with — render "runs" as flat solid emerald. */
+     nobody can interact with - render "runs" as flat solid emerald. */
   @media (hover: none) {
     .runs-word {
       animation: none;
@@ -374,7 +374,7 @@
 }
 
 /*
-  AIOS page — sharp-edged language. Every card/box on /aios drops its corner
+  AIOS page - sharp-edged language. Every card/box on /aios drops its corner
   radius (zeroed even over inline border-radius via !important). Genuinely
   circular elements (rounded-full dots, bars, avatars, pills) are preserved.
 */

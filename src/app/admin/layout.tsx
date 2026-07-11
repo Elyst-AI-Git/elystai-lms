@@ -12,7 +12,7 @@ const NAV = [
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireAdmin(); // non-admins 404 here — no login hint (spec T6)
+  await requireAdmin(); // non-admins 404 here - no login hint (spec T6)
 
   return (
     <div className="flex min-h-dvh flex-col sm:flex-row">

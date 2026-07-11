@@ -1,5 +1,5 @@
 /**
- * Shared route loader — shown by Next.js while a page segment streams in.
+ * Shared route loader - shown by Next.js while a page segment streams in.
  * Mirrors the spinner already used on /register so the loading state looks
  * the same everywhere on the site instead of inventing a new visual per page.
  */

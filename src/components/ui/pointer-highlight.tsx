@@ -52,7 +52,7 @@ export function PointerHighlight({
       {dimensions.width > 0 &&
         dimensions.height > 0 &&
         (isTouch ? (
-          // Touch devices skip the open/draw-in animation entirely — render
+          // Touch devices skip the open/draw-in animation entirely - render
           // the finished rectangle + pointer immediately, no motion.
           <div className="pointer-events-none absolute inset-0 z-0">
             <div

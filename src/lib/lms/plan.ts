@@ -42,7 +42,7 @@ export type PlanMode = "preview" | "catching-up" | "today" | "none";
 
 export interface PlanHeadline {
   mode: PlanMode;
-  /** Rendered as JSX text — plain characters only, never HTML entities. */
+  /** Rendered as JSX text - plain characters only, never HTML entities. */
   headline: string;
   /** Pill copy, or null when no badge should show. */
   badge: string | null;
@@ -85,9 +85,9 @@ export function planHeadline(
 }
 
 export interface DayPartition {
-  /** Days at or before today — visible in the course path. */
+  /** Days at or before today - visible in the course path. */
   available: DayProgress[];
-  /** Days after today — shown collapsed as locked. */
+  /** Days after today - shown collapsed as locked. */
   future: DayProgress[];
   /** Count of available days whose lessons are all complete. */
   completedDays: number;

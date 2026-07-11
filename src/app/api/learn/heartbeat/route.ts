@@ -4,7 +4,7 @@ import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
 
 /**
- * POST { lessonId, positionSeconds } — video-progress telemetry (spec D3).
+ * POST { lessonId, positionSeconds } - video-progress telemetry (spec D3).
  * Logged to interaction_events for future AI use; NEVER writes
  * lesson_progress. Best-effort by design.
  */

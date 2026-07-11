@@ -12,7 +12,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Elyst AI — Learn",
+    default: "Elyst AI - Learn",
     template: "%s | Elyst AI",
   },
   description: "AI for Work learning portal by Elyst AI.",

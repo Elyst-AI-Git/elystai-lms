@@ -44,7 +44,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
     setIsSubmitting(false);
 
     if (signInError) {
-      setError("No account found — register at elystai.com/ai-for-work.");
+      setError("No account found - register at elystai.com/ai-for-work.");
       reportFailure();
       return;
     }

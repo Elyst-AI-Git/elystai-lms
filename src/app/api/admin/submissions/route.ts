@@ -5,7 +5,7 @@ import { logEvent } from "@/lib/logging";
 import { createAdminSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * PATCH { id, status, reviewer_note? } — review a submission (spec A8):
+ * PATCH { id, status, reviewer_note? } - review a submission (spec A8):
  * reviewed / needs_attention flag + optional note, not grading.
  */
 export async function PATCH(req: NextRequest) {

@@ -1,6 +1,5 @@
-import { Check, CircleCheckBig, Clock3, LockKeyhole } from "lucide-react";
+import { Check, CircleCheckBig, LockKeyhole } from "lucide-react";
 import Link from "next/link";
-import { LessonTypeIcon } from "@/components/learn/lesson-icon";
 import { NextLessonCard } from "@/components/learn/next-lesson-card";
 import {
   formatDurationLabel,
@@ -19,8 +18,6 @@ type LessonSummary = {
   isUnlocked: boolean;
 };
 
-const TYPE_LABEL: Record<string, string> = { video: "Watch", text: "Read", task: "Build" };
-
 export function LearningPlanCanvas({
   courseSlug,
   lessons,
@@ -35,16 +32,15 @@ export function LearningPlanCanvas({
   const completed = new Set(completedLessonIds);
   const nextLesson = selectNextLesson(lessons.filter((lesson) => lesson.isUnlocked), completedLessonIds);
   const queuedLessons = nextLesson ? selectQueuedLessons(lessons, nextLesson.id) : [];
-  const { headline, badge } = planHeadline(nextLesson, today);
+  const { headline } = planHeadline(nextLesson, today);
 
   return (
     <section aria-labelledby="learning-plan-heading" className="flex h-full flex-col rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="min-w-0">
         <div>
           <p className="eyebrow text-emerald">Your learning plan</p>
-          <h2 id="learning-plan-heading" className="mt-1 text-h3 text-fg">{headline}</h2>
+          <h2 id="learning-plan-heading" className="mt-1 text-h2 text-fg">{headline}</h2>
         </div>
-        {badge && <span className="rounded-pill bg-emerald/10 px-3 py-1.5 text-label font-bold text-emerald">{badge}</span>}
       </div>
 
       {nextLesson ? (
@@ -63,11 +59,9 @@ export function LearningPlanCanvas({
                         {isDone ? <Check className="h-4 w-4" aria-hidden /> : lesson.isUnlocked ? index + 1 : <LockKeyhole className="h-4 w-4" aria-label="Locked" />}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-small font-bold text-fg">{lesson.title}</span>
+                        <span className="block text-small font-bold leading-snug text-fg">{lesson.title}</span>
                         <span className="mt-0.5 flex items-center gap-1.5 text-label text-fg-3">
-                          <LessonTypeIcon className="h-3.5 w-3.5" type={lesson.content_type} />
-                          {isDone ? "Complete" : lesson.isUnlocked ? TYPE_LABEL[lesson.content_type] ?? "Lesson" : "Locked"}
-                          {duration && <><span aria-hidden>•</span>{duration}</>}
+                          {isDone ? "Complete" : lesson.isUnlocked ? duration : "Locked"}
                         </span>
                       </span>
                     </>
@@ -90,10 +84,8 @@ export function LearningPlanCanvas({
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4 text-label text-fg-3 lg:mt-auto">
-        <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" aria-hidden />Work at your own pace</span>
-        <span className="flex items-center gap-1.5"><LockKeyhole className="h-4 w-4" aria-hidden />New days unlock with your cohort</span>
-        {nextLesson && <Link className="ml-auto min-h-11 py-2 font-bold text-emerald underline-offset-4 hover:underline" href={`/learn/${courseSlug}/day/${nextLesson.unlock_day_offset}`}>Open Day {nextLesson.unlock_day_offset + 1} plan</Link>}
+      <div className="mt-auto flex items-center justify-center gap-2 border-t border-border pt-4 text-center text-label text-fg-3">
+        <LockKeyhole className="h-4 w-4" aria-hidden />New days unlock with your cohort
       </div>
     </section>
   );

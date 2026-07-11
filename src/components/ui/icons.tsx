@@ -1,5 +1,5 @@
 /**
- * Bespoke Elyst icon set — hand-drawn inline SVG in the brand's geometric
+ * Bespoke Elyst icon set - hand-drawn inline SVG in the brand's geometric
  * language. Two variants share identical geometry:
  *   - "line"    → blueprint monoline (Home + AIOS / business side)
  *   - "duotone" → same outline + a green-tint fill panel (Learn / Circle side)
@@ -8,14 +8,14 @@
  * on the parent), so each icon inherits the surface it sits on. The signal-green
  * accent and the duotone tint are fixed brand values.
  *
- * Every icon is drawn to a 24×24 grid, 1.7 stroke, round caps/joins — so the
+ * Every icon is drawn to a 24×24 grid, 1.7 stroke, round caps/joins - so the
  * whole set reads as one family regardless of which section it lands in.
  */
 
 import * as React from "react";
 
 /**
- * IconTile — the metal chip the bespoke icons sit in. Matches the floating
+ * IconTile - the metal chip the bespoke icons sit in. Matches the floating
  * navbar's treatment: a vertical metal gradient, a bright top edge, a dark
  * bottom edge, and the nav's `rounded-md` corner. Two tones:
  *   - "darkgreen" → navbar-like deep green, white icon (Home + AIOS)
@@ -71,7 +71,7 @@ export interface IconProps {
   size?: number;
 }
 
-const ACCENT = "#00DF82"; // signal green — one highlight per icon
+const ACCENT = "#00DF82"; // signal green - one highlight per icon
 const TINT = "rgba(0, 223, 130, 0.16)"; // duotone fill panel
 
 function Svg({
@@ -107,7 +107,7 @@ const fillFor = (v: IconVariant) => (v === "duotone" ? TINT : "none");
 /*  Conversation / flow                                                     */
 /* ----------------------------------------------------------------------- */
 
-/** Message — chat bubble with a typing trio. (AIOS "Message", home chat) */
+/** Message - chat bubble with a typing trio. (AIOS "Message", home chat) */
 export function IconMessage({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -122,7 +122,7 @@ export function IconMessage({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Understands — reads your documents/data (lined page + magnifier). */
+/** Understands - reads your documents/data (lined page + magnifier). */
 export function IconUnderstand({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -134,7 +134,7 @@ export function IconUnderstand({ className, variant = "line", size }: IconProps)
   );
 }
 
-/** Acts — completes the task and delivers (paper plane). */
+/** Acts - completes the task and delivers (paper plane). */
 export function IconAct({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -151,7 +151,7 @@ export function IconAct({ className, variant = "line", size }: IconProps) {
 /*  Capabilities                                                            */
 /* ----------------------------------------------------------------------- */
 
-/** Answers from your docs — bubble with an insight spark. */
+/** Answers from your docs - bubble with an insight spark. */
 export function IconAnswer({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -168,7 +168,7 @@ export function IconAnswer({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Document — folded-corner page with text lines. */
+/** Document - folded-corner page with text lines. */
 export function IconDocument({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -182,7 +182,7 @@ export function IconDocument({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Daily briefings & tasks — checklist with one item done. */
+/** Daily briefings & tasks - checklist with one item done. */
 export function IconBriefing({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -194,7 +194,7 @@ export function IconBriefing({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Integrations — your tools as a 2×2 app grid. */
+/** Integrations - your tools as a 2×2 app grid. */
 export function IconIntegrations({ className, variant = "line", size }: IconProps) {
   const fill = fillFor(variant);
   return (
@@ -208,7 +208,7 @@ export function IconIntegrations({ className, variant = "line", size }: IconProp
   );
 }
 
-/** Access — shield with a check (role-based). */
+/** Access - shield with a check (role-based). */
 export function IconAccess({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -221,7 +221,7 @@ export function IconAccess({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Custom / bespoke — sparkle pair. */
+/** Custom / bespoke - sparkle pair. */
 export function IconCustom({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -242,7 +242,7 @@ export function IconCustom({ className, variant = "line", size }: IconProps) {
 /*  The model / process                                                     */
 /* ----------------------------------------------------------------------- */
 
-/** Discovery — magnifier with an insight dot. */
+/** Discovery - magnifier with an insight dot. */
 export function IconDiscovery({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -253,7 +253,7 @@ export function IconDiscovery({ className, variant = "line", size }: IconProps) 
   );
 }
 
-/** Configuration — sliders, tuned to you. */
+/** Configuration - sliders, tuned to you. */
 export function IconConfigure({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -267,7 +267,7 @@ export function IconConfigure({ className, variant = "line", size }: IconProps) 
   );
 }
 
-/** Deployment — goes live (rocket). */
+/** Deployment - goes live (rocket). */
 export function IconDeploy({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -281,7 +281,7 @@ export function IconDeploy({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Support — lifebuoy, we stay on. */
+/** Support - lifebuoy, we stay on. */
 export function IconSupport({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -296,7 +296,7 @@ export function IconSupport({ className, variant = "line", size }: IconProps) {
 /*  Pricing                                                                 */
 /* ----------------------------------------------------------------------- */
 
-/** One-time setup — fast bolt. */
+/** One-time setup - fast bolt. */
 export function IconSetup({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -308,7 +308,7 @@ export function IconSetup({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Retainer — ongoing / recurring cycle. */
+/** Retainer - ongoing / recurring cycle. */
 export function IconRetainer({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -321,7 +321,7 @@ export function IconRetainer({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Training — mortarboard. */
+/** Training - mortarboard. */
 export function IconTraining({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -336,7 +336,7 @@ export function IconTraining({ className, variant = "line", size }: IconProps) {
 /*  Learn / Accelerator                                                     */
 /* ----------------------------------------------------------------------- */
 
-/** Built by people who build it — wrench. */
+/** Built by people who build it - wrench. */
 export function IconBuild({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -349,7 +349,7 @@ export function IconBuild({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Not your typical course — focused bullseye. */
+/** Not your typical course - focused bullseye. */
 export function IconFocus({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -360,7 +360,7 @@ export function IconFocus({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** Community / network — three linked nodes. */
+/** Community / network - three linked nodes. */
 export function IconCommunity({ className, variant = "line", size }: IconProps) {
   const fill = fillFor(variant);
   return (
@@ -373,7 +373,7 @@ export function IconCommunity({ className, variant = "line", size }: IconProps) 
   );
 }
 
-/** Our promise — one focused seal with a check. */
+/** Our promise - one focused seal with a check. */
 export function IconPromise({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -384,7 +384,7 @@ export function IconPromise({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** AI program for professionals — briefcase + spark. */
+/** AI program for professionals - briefcase + spark. */
 export function IconProgram({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>
@@ -399,7 +399,7 @@ export function IconProgram({ className, variant = "line", size }: IconProps) {
   );
 }
 
-/** The Circle — a ring of members. */
+/** The Circle - a ring of members. */
 export function IconCircle({ className, variant = "line", size }: IconProps) {
   return (
     <Svg className={className} size={size}>

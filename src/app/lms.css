@@ -8,9 +8,9 @@
 :root {
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
-  --lms-text-body: 1.0625rem;
-  --lms-text-label: 1rem;
-  --lms-text-meta: 0.9375rem;
+  --lms-text-body: 1.125rem;
+  --lms-text-label: 1.0625rem;
+  --lms-text-meta: 1rem;
   --lms-leading-body: 1.58;
   --lms-leading-label: 1.5;
 }

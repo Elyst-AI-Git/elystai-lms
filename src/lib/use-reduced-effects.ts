@@ -10,7 +10,7 @@ const LOW_CORE_COUNT = 4;
 const LOW_MEMORY_GB = 4;
 
 /**
- * Hardware-only heuristic for a low-powered machine — few logical CPU cores or
+ * Hardware-only heuristic for a low-powered machine - few logical CPU cores or
  * little memory. Reads `navigator`, so only call it on the client (e.g. inside
  * an effect or event handler). Shared by {@link useReducedEffects} and by the
  * canvas components that already run their own client-side matchMedia checks.
@@ -30,13 +30,13 @@ export function isLowPerfDevice(): boolean {
  * True when we should serve the lighter, *static* version of a continuous or
  * heavy animation. This is a superset of {@link useIsTouch}: as well as touch
  * devices and the reduced-motion preference, it catches **low-powered
- * desktops** — machines that have a mouse (so `hover: none` is false and
+ * desktops** - machines that have a mouse (so `hover: none` is false and
  * touch-gating misses them entirely) but few CPU cores or little memory, where
  * our canvas / WebGL / requestAnimationFrame loops still cause visible jank.
  *
  * Like {@link useIsTouch} it returns `true` (reduced) on the server and the
- * first client render — so the markup matches SSR and no consumer ever starts
- * an expensive canvas/RAF loop before the real signals can be read — then
+ * first client render - so the markup matches SSR and no consumer ever starts
+ * an expensive canvas/RAF loop before the real signals can be read - then
  * flips to `false` after mount on capable desktops, which keep the full
  * experience.
  */

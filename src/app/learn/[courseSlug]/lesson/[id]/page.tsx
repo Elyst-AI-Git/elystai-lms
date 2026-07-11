@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FileText } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Video } from "lucide-react";
 import { Markdown } from "@/components/learn/markdown";
 import { MarkDoneBar } from "@/components/learn/mark-done-button";
 import { VideoEmbed } from "@/components/learn/video-embed";
@@ -12,15 +12,6 @@ import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-
-const IST_DATETIME = new Intl.DateTimeFormat("en-IN", {
-  timeZone: "Asia/Kolkata",
-  weekday: "short",
-  day: "numeric",
-  month: "short",
-  hour: "numeric",
-  minute: "2-digit",
-});
 
 export default async function LessonView({
   params,
@@ -94,11 +85,11 @@ export default async function LessonView({
       {/* header */}
       <div className="rise" style={{ ["--stagger-i" as string]: 0 }}>
         <div className="flex items-center justify-between">
-          <Link href={dayHref} className="inline-flex min-h-11 items-center px-2 text-label text-fg-3 hover:text-emerald">
-            ← Day {lesson.unlock_day_offset + 1}
+          <Link href={dayHref} className="inline-flex min-h-11 items-center gap-2 px-2 text-small font-bold text-fg-2 hover:text-emerald">
+            <ArrowLeft className="h-5 w-5" aria-hidden /> Day {lesson.unlock_day_offset + 1}
           </Link>
         </div>
-        <h1 className="mt-2 font-display text-h3 font-bold tracking-display text-fg">
+        <h1 className="mt-2 font-display text-h2 font-bold tracking-display text-fg">
           {lesson.title}
         </h1>
       </div>
@@ -109,27 +100,9 @@ export default async function LessonView({
           <VideoEmbed lessonId={lesson.id} embedUrl={videoEmbed.url} />
         </div>
       )}
-
-      {/* live session */}
-      {lesson.live_link && (
-        <div className="surface-dark-hero rise rounded-card p-5" style={{ ["--stagger-i" as string]: 1 }}>
-          <div className="flex items-center gap-2">
-            <span className="live-dot h-2 w-2 rounded-pill bg-green" />
-            <p className="text-label font-semibold uppercase tracking-wide text-green">Live session</p>
-          </div>
-          {lesson.live_starts_at && (
-            <p className="mt-2 text-small text-fg-muted-dark">
-              {IST_DATETIME.format(new Date(lesson.live_starts_at))} IST
-            </p>
-          )}
-          <a
-            href={lesson.live_link}
-            target="_blank"
-            rel="noreferrer"
-            className="pressable mt-4 inline-flex min-h-[48px] items-center justify-center rounded-md bg-green px-6 font-bold text-ink"
-          >
-            Join live class
-          </a>
+      {lesson.content_type === "video" && !videoEmbed && (
+        <div className="rise flex aspect-video items-center justify-center rounded-card border border-green/30 bg-green/10 p-6 text-center" style={{ ["--stagger-i" as string]: 1 }}>
+          <div><Video className="mx-auto h-7 w-7 text-emerald" aria-hidden /><p className="mt-3 text-small font-bold text-fg">Today&apos;s session recording will appear here soon.</p></div>
         </div>
       )}
 
@@ -148,9 +121,9 @@ export default async function LessonView({
       )}
 
       {materials?.length ? (
-        <section className="rise space-y-3" style={{ ["--stagger-i" as string]: 3 }}>
+        <section className="rise mt-9 space-y-3" style={{ ["--stagger-i" as string]: 3 }}>
           <div>
-            <p className="eyebrow text-emerald">Day materials</p>
+            <p className="eyebrow text-emerald">Materials</p>
             <h2 className="mt-1 text-h3 text-fg">Use these with today&apos;s lesson.</h2>
           </div>
           {materials.map((material) => (
@@ -162,11 +135,18 @@ export default async function LessonView({
         </section>
       ) : null}
 
+      <MarkDoneBar
+        lessonId={lesson.id}
+        initialCompleted={Boolean(progressRow)}
+        nextHref={next ? `/learn/${course.slug}/lesson/${next.id}` : null}
+        backHref={dayHref}
+      />
+
       {/* prev/next continuity */}
-      <nav className="flex items-center justify-between gap-4 border-t border-border pt-4 text-label">
+      <nav className="flex items-center justify-between gap-4 border-t border-border pt-4 text-small font-bold">
         {prev ? (
-          <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="inline-flex min-h-11 min-w-0 items-center px-2 text-fg-3 hover:text-emerald">
-            ← <span className="font-medium">{prev.title}</span>
+          <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="inline-flex min-h-11 min-w-0 items-center gap-2 px-2 text-fg-2 hover:text-emerald">
+            <ArrowLeft className="h-5 w-5" aria-hidden /> Day {prev.unlock_day_offset + 1}
           </Link>
         ) : (
           <span />
@@ -176,17 +156,11 @@ export default async function LessonView({
             href={`/learn/${course.slug}/lesson/${next.id}`}
             className="inline-flex min-h-11 min-w-0 items-center px-2 text-right text-fg-3 hover:text-emerald"
           >
-            <span className="font-medium">{next.title}</span> →
+            Day {next.unlock_day_offset + 1} <ArrowRight className="h-5 w-5" aria-hidden />
           </Link>
         )}
       </nav>
 
-      <MarkDoneBar
-        lessonId={lesson.id}
-        initialCompleted={Boolean(progressRow)}
-        nextHref={next ? `/learn/${course.slug}/lesson/${next.id}` : null}
-        backHref={dayHref}
-      />
     </article>
   );
 }

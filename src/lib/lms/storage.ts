@@ -8,7 +8,7 @@ import {
 /**
  * Submission screenshots live in the private `submissions` bucket and are
  * only ever reachable through short-lived signed URLs minted here (spec A4).
- * Uploads go through the server (service role) after validation — the bucket
+ * Uploads go through the server (service role) after validation - the bucket
  * has no user-facing storage policies at all.
  */
 

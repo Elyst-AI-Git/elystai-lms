@@ -27,7 +27,7 @@ export default async function LearnerDrilldown({
     .eq("id", enrollmentId)
     .maybeSingle();
   if (!enrollment) notFound();
-  // profiles live in public — cross-schema embed unsupported, fetch separately
+  // profiles live in public - cross-schema embed unsupported, fetch separately
   const { data: profile } = await admin
     .from("profiles")
     .select("full_name, email")
@@ -79,7 +79,7 @@ export default async function LearnerDrilldown({
                   ✓ {IST_DATETIME.format(new Date(completedAt))}
                 </span>
               ) : (
-                <span className="text-label text-fg-3">—</span>
+                <span className="text-label text-fg-3">-</span>
               )}
             </li>
           );

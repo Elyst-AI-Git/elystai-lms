@@ -132,7 +132,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       >
         &ldquo;{testimonial.testimonial}&rdquo;
       </h3>
-      {/* Attribution — name on line 1, program on line 2, no dash */}
+      {/* Attribution - name on line 1, program on line 2, no dash */}
       <div className="absolute bottom-8 left-8 right-8">
         <p className={cn(
           "font-bold not-italic",

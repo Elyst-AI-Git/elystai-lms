@@ -58,7 +58,7 @@ export function SubmissionForm({
       const res = await fetch("/api/learn/submissions", { method: "POST", body: data });
       const body = await res.json().catch(() => null);
       if (!res.ok) throw new Error(body?.error ?? "Submission failed");
-      setMessage({ ok: true, text: body?.updated ? "Submission updated." : "Submitted — nice work!" });
+      setMessage({ ok: true, text: body?.updated ? "Submission updated." : "Submitted - nice work!" });
       setFile(null);
       setPreview(null);
       router.refresh();
@@ -78,7 +78,7 @@ export function SubmissionForm({
         <p className="text-label text-fg-3">
           Already submitted{existing.hasScreenshot ? " with a screenshot" : ""}
           {existing.url ? (
-            <> — <a className="text-emerald underline" href={existing.url} target="_blank" rel="noreferrer">your link</a></>
+            <> - <a className="text-emerald underline" href={existing.url} target="_blank" rel="noreferrer">your link</a></>
           ) : null}
           . Submitting again replaces it.
         </p>

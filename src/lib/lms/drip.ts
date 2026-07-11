@@ -2,12 +2,12 @@
  * Calendar-drip logic (spec D2/A7). Single source of truth for unlock math.
  *
  * All day boundaries are fixed to Asia/Kolkata (UTC+05:30, no DST) regardless
- * of server or learner timezone: the whole cohort — India and GCC — unlocks
+ * of server or learner timezone: the whole cohort - India and GCC - unlocks
  * at the same instant (midnight IST ≈ 22:30 Gulf). Pure functions only; no
  * Supabase, no env, so they are unit-testable with fixed dates.
  */
 
-const IST_OFFSET_MINUTES = 330; // UTC+05:30, constant — IST has no DST
+const IST_OFFSET_MINUTES = 330; // UTC+05:30, constant - IST has no DST
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /**
@@ -52,7 +52,7 @@ export function isUnlocked(
 
 /**
  * The UTC instant at which a given day offset unlocks (midnight IST of that
- * day) — used by the UI to show "unlocks on …" for locked days.
+ * day) - used by the UI to show "unlocks on …" for locked days.
  */
 export function unlockDate(unlockDayOffset: number, batchStartsOn: string): Date {
   const epochDay = startEpochDay(batchStartsOn) + unlockDayOffset;

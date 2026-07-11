@@ -16,7 +16,7 @@ interface StarBackgroundProps {
 
 /**
  * A static starfield: stars are generated and painted once to a canvas (and
- * repainted only on resize). No per-frame animation loop — the field is
+ * repainted only on resize). No per-frame animation loop - the field is
  * decorative and sits below the fold, so a single paint is all it needs.
  */
 export const StarsBackground: React.FC<StarBackgroundProps> = ({
