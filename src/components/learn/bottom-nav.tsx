@@ -1,6 +1,6 @@
 "use client";
 
-import { GraduationCap, FolderOpen } from "lucide-react";
+import { FolderOpen, GraduationCap, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -20,7 +20,7 @@ export function BottomNav() {
   if (pathname.includes("/lesson/")) return null;
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)]"
+      className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="Primary"
     >
       <div className="flex items-center gap-1 rounded-pill border border-border bg-white/90 p-1.5 shadow-card-hover backdrop-blur">
@@ -35,7 +35,7 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`pressable flex min-h-[44px] items-center gap-2 rounded-pill px-5 text-small font-semibold transition-colors ${
+              className={`pressable flex min-h-[44px] items-center gap-1.5 rounded-pill px-3 text-label font-semibold transition-colors sm:gap-2 sm:px-5 sm:text-small ${
                 active ? "bg-emerald text-fg-on-dark" : "text-fg-2 hover:text-emerald"
               }`}
             >
@@ -44,6 +44,12 @@ export function BottomNav() {
             </Link>
           );
         })}
+        <form action="/api/auth/signout" method="post">
+          <button className="pressable flex min-h-[44px] items-center gap-1.5 rounded-pill px-3 text-label font-semibold text-fg-2 transition-colors hover:text-emerald sm:gap-2 sm:px-5 sm:text-small" type="submit">
+            <LogOut className="h-4 w-4" strokeWidth={2} aria-hidden />
+            Sign out
+          </button>
+        </form>
       </div>
     </nav>
   );

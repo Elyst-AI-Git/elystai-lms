@@ -1,3 +1,4 @@
+import { ArrowUpRight, LibraryBig } from "lucide-react";
 import { ResourceKindIcon } from "@/components/learn/lesson-icon";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { DEFAULT_COURSE_SLUG } from "@/lib/lms/constants";
@@ -53,42 +54,64 @@ export default async function VaultPage() {
   }
   const sorted = [...groups.values()].sort((a, b) => a.position - b.position);
 
+  const resourceCount = rows.length;
+
   return (
-    <div className="space-y-6">
-      <h1 className="font-display text-h3 font-bold tracking-display text-fg">Resource Vault</h1>
-      {sorted.length === 0 && (
-        <p className="text-small text-fg-3">Resources will appear here as the course progresses.</p>
-      )}
-      {sorted.map((group, gi) => (
-        <section key={group.title} className="space-y-2">
-          <div className="flex items-center gap-3">
-            <h2 className="shrink-0 text-eyebrow font-semibold uppercase tracking-wide text-emerald">
-              {group.title}
-            </h2>
-            <span className="h-px flex-1 bg-border" aria-hidden />
-          </div>
-          {group.items.map((r, i) => (
-            <a
-              key={r.id}
-              href={r.url_or_storage_path}
-              target="_blank"
-              rel="noreferrer"
-              className="pressable rise flex items-center gap-3 rounded-card bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
-              style={{ ["--stagger-i" as string]: gi * 3 + i }}
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald">
-                <ResourceKindIcon kind={r.kind} />
-              </span>
-              <p className="min-w-0 flex-1 truncate font-medium text-fg">{r.title}</p>
-              {batchOnlyIds.has(r.id) && (
-                <span className="rounded-pill bg-green/15 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald">
-                  your batch
-                </span>
-              )}
-            </a>
+    <div className="mx-auto max-w-6xl space-y-6 pb-3">
+      <header className="rise flex flex-wrap items-end justify-between gap-4" style={{ ["--stagger-i" as string]: 0 }}>
+        <div>
+          <p className="eyebrow text-emerald">{course.title}</p>
+          <h1 className="mt-1 text-h1 text-fg">Resource library</h1>
+          <p className="mt-2 text-small text-fg-2">Useful templates, recordings, and reference material — organised by your learning plan.</p>
+        </div>
+        <span className="rounded-pill bg-emerald/10 px-3 py-1.5 text-label font-bold text-emerald">{resourceCount} resources</span>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_15rem]">
+        <div className="space-y-5">
+          {sorted.length === 0 && (
+            <p className="rounded-card border border-border bg-white p-5 text-small text-fg-3">Resources will appear here as the course progresses.</p>
+          )}
+          {sorted.map((group, gi) => (
+            <section className="rise rounded-card border border-border bg-white p-4 shadow-card sm:p-5" key={group.title} style={{ ["--stagger-i" as string]: gi + 1 }}>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="eyebrow text-emerald">Learning area</p>
+                  <h2 className="mt-1 text-h3 text-fg">{group.title}</h2>
+                </div>
+                <span className="text-label font-bold text-fg-3">{group.items.length} resources</span>
+              </div>
+              <div className="mt-4 divide-y divide-border">
+                {group.items.map((resource) => (
+                  <a
+                    className="pressable flex min-h-16 items-center gap-3 py-3 transition-colors hover:bg-emerald/5"
+                    href={resource.url_or_storage_path}
+                    key={resource.id}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald">
+                      <ResourceKindIcon kind={resource.kind} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-small font-bold text-fg">{resource.title}</span>
+                      <span className="mt-0.5 block text-label text-fg-3">{resource.kind}<span className="sr-only">, opens in a new tab</span></span>
+                    </span>
+                    {batchOnlyIds.has(resource.id) && <span className="hidden rounded-pill bg-green/15 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald sm:inline">Your batch</span>}
+                    <ArrowUpRight className="h-4 w-4 shrink-0 text-fg-3" aria-hidden />
+                  </a>
+                ))}
+              </div>
+            </section>
           ))}
-        </section>
-      ))}
+        </div>
+
+        <aside className="rise h-fit rounded-card border border-green/30 bg-green/10 p-5" style={{ ["--stagger-i" as string]: 1 }}>
+          <LibraryBig className="h-6 w-6 text-emerald" aria-hidden />
+          <h2 className="mt-3 font-display text-h3 text-fg">Make this yours.</h2>
+          <p className="mt-2 text-small text-fg-2">Come back here whenever you need a template, recording, or reference for this week&apos;s work.</p>
+        </aside>
+      </div>
     </div>
   );
 }
