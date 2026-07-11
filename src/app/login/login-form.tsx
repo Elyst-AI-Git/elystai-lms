@@ -104,7 +104,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
       <div className="grid w-full overflow-hidden rounded-card border border-border bg-white shadow-card lg:min-h-[620px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <section className="flex min-w-0 flex-col p-5 sm:p-8 lg:p-8">
           <a href="/login" className="inline-flex w-fit" aria-label="Elyst AI login">
-            <Image alt="Elyst AI" className="h-14 w-14 object-contain" height={56} priority src="/logo-emerald.svg" width={56} />
+            <Image alt="Elyst AI" className="h-12 w-auto object-contain" height={60} priority src="/logo-wordmark.svg" width={186} />
           </a>
 
           <div className="my-auto max-w-md py-8 lg:py-10">
@@ -218,7 +218,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/90 to-transparent p-12 pt-28">
             <p className="eyebrow text-emerald">AI for Work</p>
-            <p className="mt-3 max-w-md font-display text-h2 font-bold tracking-display text-fg">
+            <p className="mt-3 whitespace-nowrap font-display text-h2 font-bold tracking-display text-fg">
               Make AI useful at your work.
             </p>
           </div>

@@ -89,10 +89,10 @@ export default async function LearnDashboard() {
       </section>
 
       <div className={`grid gap-6 lg:order-3 lg:grid-cols-[minmax(0,1fr)_20rem] ${liveJoinable ? "order-3" : "order-2"}`}>
-        <div className="rise" style={{ ["--stagger-i" as string]: 2 }}>
+        <div className="rise lg:h-full" style={{ ["--stagger-i" as string]: 2 }}>
           <LearningPlanCanvas courseSlug={course.slug} completedLessonIds={completedLessonIds} lessons={allLessons} today={today} />
         </div>
-        <div className="rise" style={{ ["--stagger-i" as string]: 3 }}>
+        <div className="rise lg:h-full" style={{ ["--stagger-i" as string]: 3 }}>
           <CoursePath courseSlug={course.slug} perDay={progress.perDay} today={today} />
         </div>
       </div>

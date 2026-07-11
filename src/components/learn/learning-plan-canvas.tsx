@@ -38,7 +38,7 @@ export function LearningPlanCanvas({
   const { headline, badge } = planHeadline(nextLesson, today);
 
   return (
-    <section aria-labelledby="learning-plan-heading" className="rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
+    <section aria-labelledby="learning-plan-heading" className="flex h-full flex-col rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="eyebrow text-emerald">Your learning plan</p>
@@ -90,7 +90,7 @@ export function LearningPlanCanvas({
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4 text-label text-fg-3">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4 text-label text-fg-3 lg:mt-auto">
         <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" aria-hidden />Work at your own pace</span>
         <span className="flex items-center gap-1.5"><LockKeyhole className="h-4 w-4" aria-hidden />New days unlock with your cohort</span>
         {nextLesson && <Link className="ml-auto min-h-11 py-2 font-bold text-emerald underline-offset-4 hover:underline" href={`/learn/${courseSlug}/day/${nextLesson.unlock_day_offset}`}>Open Day {nextLesson.unlock_day_offset + 1} plan</Link>}

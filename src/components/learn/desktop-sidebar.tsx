@@ -16,7 +16,7 @@ export function DesktopSidebar({ email, name }: { email: string; name: string | 
   return (
     <aside className="surface-dark-hero hidden min-h-dvh flex-col p-4 lg:flex" aria-label="Learner workspace">
       <Link className="flex h-16 items-center px-2" href="/learn">
-        <Image alt="Elyst AI" className="h-12 w-12 object-contain brightness-0 invert" height={48} src="/logo-emerald.svg" width={48} />
+        <Image alt="Elyst AI" className="h-10 w-auto object-contain brightness-0 invert" height={45} src="/logo-wordmark.svg" width={140} />
       </Link>
       <p className="mt-8 px-2 lms-meta font-bold uppercase tracking-wide text-green">AI for Work</p>
       <nav className="mt-3 space-y-1" aria-label="Primary">

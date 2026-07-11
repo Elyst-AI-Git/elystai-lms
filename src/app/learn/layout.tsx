@@ -2,12 +2,21 @@ import Link from "next/link";
 import { BottomNav } from "@/components/learn/bottom-nav";
 import { DesktopSidebar } from "@/components/learn/desktop-sidebar";
 import { requireUser } from "@/lib/lms/auth";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export default async function LearnLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
+  // OTP users carry no name in auth metadata — the profile row is the source.
+  const supabase = await createServerSupabaseClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .maybeSingle();
+  const name = profile?.full_name ?? user.user_metadata.full_name ?? null;
   return (
     <div className="lms-surface min-h-dvh lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
-      <DesktopSidebar email={user.email ?? ""} name={user.user_metadata.full_name ?? null} />
+      <DesktopSidebar email={user.email ?? ""} name={name} />
       <div className="flex min-w-0 flex-col">
         <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 pt-4 lg:px-8 lg:pt-6">
           <Link className="font-display text-lg font-bold tracking-display text-emerald lg:hidden" href="/learn">

@@ -49,7 +49,7 @@ export function CoursePath({ courseSlug, perDay, today }: CoursePathProps) {
   const { available: availableDays, future: futureDays, completedDays } = partitionDays(perDay, today);
 
   return (
-    <section aria-labelledby="course-path-heading" className="rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
+    <section aria-labelledby="course-path-heading" className="flex h-full flex-col rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="eyebrow text-emerald">Your learning path</p>
@@ -61,7 +61,7 @@ export function CoursePath({ courseSlug, perDay, today }: CoursePathProps) {
       {availableDays.length === 0 ? (
         <p className="mt-5 rounded-md bg-surface-muted px-4 py-3 text-small text-fg-2">Your first day will appear here when the cohort begins.</p>
       ) : (
-        <div className="mt-4 divide-y divide-border">
+        <div className="mt-4 min-h-0 flex-1 divide-y divide-border lg:overflow-y-auto">
           {availableDays.map((day) => (
             <DayRow courseSlug={courseSlug} day={day} isToday={day.day === today} key={day.day} />
           ))}
