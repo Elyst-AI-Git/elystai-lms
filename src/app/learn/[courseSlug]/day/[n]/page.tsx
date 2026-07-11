@@ -59,7 +59,7 @@ export default async function DayView({
   const primaryIsPreview = Boolean(nextLesson?.is_preview && !unlocked);
 
   return (
-    <article className="space-y-6 pb-2">
+    <article className="mx-auto max-w-3xl space-y-6 pb-2">
       <header className="rise" style={{ ["--stagger-i" as string]: 0 }}>
         <Link className="inline-flex min-h-11 items-center text-label font-bold text-fg-3 hover:text-emerald" href="/learn">
           ← Back to your course

@@ -91,11 +91,11 @@ export default async function LessonView({
   const dayHref = `/learn/${course.slug}/day/${lesson.unlock_day_offset}`;
 
   return (
-    <article className="space-y-5 pb-2">
+    <article className="mx-auto max-w-3xl space-y-5 pb-2">
       {/* header */}
       <div className="rise" style={{ ["--stagger-i" as string]: 0 }}>
         <div className="flex items-center justify-between">
-          <Link href={dayHref} className="text-label text-fg-3 hover:text-emerald">
+          <Link href={dayHref} className="inline-flex min-h-11 items-center px-2 text-label text-fg-3 hover:text-emerald">
             ← Day {lesson.unlock_day_offset + 1}
           </Link>
           <span className="rounded-pill bg-emerald/10 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald">
@@ -178,7 +178,7 @@ export default async function LessonView({
       {/* prev/next continuity */}
       <nav className="flex items-center justify-between gap-4 border-t border-border pt-4 text-label">
         {prev ? (
-          <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="min-w-0 text-fg-3 hover:text-emerald">
+          <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="inline-flex min-h-11 min-w-0 items-center px-2 text-fg-3 hover:text-emerald">
             ← <span className="font-medium">{prev.title}</span>
           </Link>
         ) : (
@@ -187,7 +187,7 @@ export default async function LessonView({
         {next && (
           <Link
             href={`/learn/${course.slug}/lesson/${next.id}`}
-            className="min-w-0 text-right text-fg-3 hover:text-emerald"
+            className="inline-flex min-h-11 min-w-0 items-center px-2 text-right text-fg-3 hover:text-emerald"
           >
             <span className="font-medium">{next.title}</span> →
           </Link>
