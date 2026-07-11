@@ -5,6 +5,7 @@ import { Markdown } from "@/components/learn/markdown";
 import { MarkDoneBar } from "@/components/learn/mark-done-button";
 import { SubmissionForm } from "@/components/learn/submission-form";
 import { VideoEmbed } from "@/components/learn/video-embed";
+import { resolveVideoEmbed } from "@/lib/lms/video";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
 import { LMS_EVENTS } from "@/lib/lms/events";
@@ -39,7 +40,7 @@ export default async function LessonView({
     .schema("app")
     .from("lessons")
     .select(
-      "id, title, content_type, unlock_day_offset, position, is_preview, bunny_video_id, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id)"
+      "id, title, content_type, unlock_day_offset, position, is_preview, bunny_video_id, youtube_id, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id)"
     )
     .eq("modules.course_id", course.id)
     .order("unlock_day_offset", { ascending: true })
@@ -83,9 +84,13 @@ export default async function LessonView({
     payload: { lessonId: lesson.id, enrollmentId: enrollment.id, contentType: lesson.content_type },
   });
 
-  const embedUrl =
-    lesson.content_type === "video" && lesson.bunny_video_id
-      ? `https://iframe.mediadelivery.net/embed/${process.env.BUNNY_STREAM_LIBRARY_ID}/${lesson.bunny_video_id}`
+  const videoEmbed =
+    lesson.content_type === "video"
+      ? resolveVideoEmbed({
+          youtubeId: lesson.youtube_id,
+          bunnyVideoId: lesson.bunny_video_id,
+          bunnyLibraryId: process.env.BUNNY_STREAM_LIBRARY_ID,
+        })
       : null;
 
   const dayHref = `/learn/${course.slug}/day/${lesson.unlock_day_offset}`;
@@ -108,9 +113,9 @@ export default async function LessonView({
       </div>
 
       {/* video: full-bleed cinema strip on mobile */}
-      {embedUrl && (
+      {videoEmbed && (
         <div className="rise -mx-4 bg-ink sm:mx-0 sm:overflow-hidden sm:rounded-card sm:shadow-card" style={{ ["--stagger-i" as string]: 1 }}>
-          <VideoEmbed lessonId={lesson.id} embedUrl={embedUrl} />
+          <VideoEmbed lessonId={lesson.id} embedUrl={videoEmbed.url} />
         </div>
       )}
 
