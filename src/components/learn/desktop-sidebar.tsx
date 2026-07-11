@@ -15,7 +15,7 @@ export function DesktopSidebar({ email, name }: { email: string; name: string | 
 
   return (
     <aside className="surface-dark-hero hidden min-h-dvh flex-col p-4 lg:flex" aria-label="Learner workspace">
-      <Link className="flex h-16 items-center px-2" href="/learn">
+      <Link className="flex h-16 items-center justify-center" href="/learn">
         <Image alt="Elyst AI" className="h-10 w-auto object-contain brightness-0 invert" height={45} src="/logo-wordmark.svg" width={140} />
       </Link>
       <p className="mt-8 px-2 lms-meta font-bold uppercase tracking-wide text-green">AI for Work</p>
@@ -38,8 +38,8 @@ export function DesktopSidebar({ email, name }: { email: string; name: string | 
           );
         })}
       </nav>
-      <div className="mt-auto border-t border-white/15 pt-4">
-        <p className="px-3 text-center lms-meta text-fg-muted-dark"><span className="block">Elyst AI Learning Portal - Version 1.0</span><span className="mt-1 block">Got a feedback? <a className="font-bold text-green underline-offset-4 hover:underline" href="https://wa.me/919633288931" rel="noreferrer" target="_blank">Share it here</a></span></p>
+      <div className="mt-10 border-t border-white/15 pt-5">
+        <p className="px-3 text-center lms-meta text-fg-muted-dark">Got a feedback? <a className="font-bold text-green underline-offset-4 hover:underline" href="https://wa.me/919633288931" rel="noreferrer" target="_blank">Share it here</a></p>
         <div className="mt-4 px-3">
           <p className="lms-label font-bold text-fg-on-dark">{name ?? "AI for Work learner"}</p>
           <p className="mt-1 truncate lms-meta text-fg-muted-dark">{email}</p>

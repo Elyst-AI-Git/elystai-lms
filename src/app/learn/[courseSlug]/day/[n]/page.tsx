@@ -76,14 +76,14 @@ export default async function DayView({
       </header>
 
       {!unlocked && !hasPreview && (
-        <section className="rise rounded-card border border-border bg-surface-muted p-5" style={{ ["--stagger-i" as string]: 1 }}>
+        <section className="rise rounded-md border border-border bg-surface-muted p-5" style={{ ["--stagger-i" as string]: 1 }}>
           <LockKeyhole className="h-6 w-6 text-emerald" aria-hidden />
           <h2 className="mt-3 font-display text-h3 text-fg">This day is waiting for you.</h2>
           <p className="mt-2 text-small text-fg-2">Come back on {IST_DATE.format(unlockDate(day, batch.starts_on))} for the full lesson plan.</p>
         </section>
       )}
 
-      <section aria-labelledby="lesson-plan-heading" className="rise rounded-card border border-border bg-white p-4 shadow-card sm:p-5" style={{ ["--stagger-i" as string]: 2 }}>
+      <section aria-labelledby="lesson-plan-heading" className="rise rounded-md border border-border bg-white p-4 shadow-card sm:p-5" style={{ ["--stagger-i" as string]: 2 }}>
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="eyebrow text-emerald">Your lesson plan</p>

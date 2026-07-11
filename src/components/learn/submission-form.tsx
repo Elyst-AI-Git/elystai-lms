@@ -70,7 +70,7 @@ export function SubmissionForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-card bg-white p-5 shadow-card">
+    <form onSubmit={onSubmit} className="space-y-4 rounded-md bg-white p-5 shadow-card">
       <h2 className="font-display font-bold text-fg">
         {existing ? "Your submission" : "Submit your work"}
       </h2>
@@ -111,7 +111,7 @@ export function SubmissionForm({
             setDragOver(false);
             acceptFile(e.dataTransfer.files?.[0]);
           }}
-          className={`pressable mt-1 flex min-h-24 w-full items-center justify-center rounded-card border-2 border-dashed p-3 transition-colors ${
+          className={`pressable mt-1 flex min-h-24 w-full items-center justify-center rounded-md border-2 border-dashed p-3 transition-colors ${
             dragOver ? "border-green bg-green/5" : "border-border bg-bg hover:border-emerald/50"
           }`}
         >

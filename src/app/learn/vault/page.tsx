@@ -77,12 +77,12 @@ export default async function VaultPage() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_15rem]">
         <div className="space-y-5">
           {sorted.length === 0 && (
-            <p className="rounded-card border border-border bg-white p-5 text-small text-fg-3">Resources will appear here as the course progresses.</p>
+            <p className="rounded-md border border-border bg-white p-5 text-small text-fg-3">Resources will appear here as the course progresses.</p>
           )}
           {sorted.map((group, gi) => {
             const firstDay = firstDayByModule.get(group.id);
             const locked = Boolean(firstDay && !firstDay.preview && !isUnlocked(firstDay.day, batch.starts_on, new Date()));
-            return <section className={`rise rounded-card border p-4 sm:p-5 ${locked ? "border-border bg-surface-muted" : "border-border bg-white shadow-card"}`} key={group.title} style={{ ["--stagger-i" as string]: gi + 1 }}>
+            return <section className={`rise rounded-md border p-4 sm:p-5 ${locked ? "border-border bg-surface-muted" : "border-border bg-white shadow-card"}`} key={group.title} style={{ ["--stagger-i" as string]: gi + 1 }}>
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="eyebrow text-emerald">{locked ? "Unlocks with your cohort" : "Learning area"}</p>
@@ -115,7 +115,7 @@ export default async function VaultPage() {
           })}
         </div>
 
-        <aside className="rise h-fit rounded-card border border-green/30 bg-green/10 p-5" style={{ ["--stagger-i" as string]: 1 }}>
+        <aside className="rise h-fit rounded-md border border-green/30 bg-green/10 p-5" style={{ ["--stagger-i" as string]: 1 }}>
           <LibraryBig className="h-6 w-6 text-emerald" aria-hidden />
           <h2 className="mt-3 font-display text-h3 text-fg">Make this yours.</h2>
           <p className="mt-2 text-small text-fg-2">Come back here whenever you need a template, recording, or reference for this week&apos;s work.</p>

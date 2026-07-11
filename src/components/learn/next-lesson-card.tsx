@@ -30,7 +30,7 @@ export function NextLessonCard({
   const Heading = headingLevel;
 
   return (
-    <section aria-labelledby="next-lesson-heading" className="rounded-card bg-emerald p-5 text-fg-on-dark shadow-card sm:p-6">
+    <section aria-labelledby="next-lesson-heading" className="rounded-md bg-emerald p-5 text-fg-on-dark shadow-card sm:p-6">
       <div className="flex items-center gap-2 text-label font-bold uppercase tracking-wide text-green">
         <span className="flex h-7 w-7 items-center justify-center rounded-pill bg-green/15">
           <LessonTypeIcon className="h-3.5 w-3.5" type={lesson.content_type} />

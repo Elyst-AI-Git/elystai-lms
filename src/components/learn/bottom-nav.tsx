@@ -20,7 +20,7 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="Primary"
     >
-      <div className="flex items-center gap-1 rounded-card bg-emerald p-1.5 shadow-card-hover">
+      <div className="flex items-center gap-1 rounded-md bg-emerald p-1.5 shadow-card-hover">
         {ITEMS.map((item) => {
           const active =
             item.href === "/learn"
