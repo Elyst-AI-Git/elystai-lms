@@ -1,7 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import { ArrowRight, LogIn, Mail, ShieldCheck } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import Image from "next/image";
 import {
   InputOTP,
@@ -100,19 +100,15 @@ export function LoginForm({ oauthError }: LoginFormProps) {
   }
 
   return (
-    <main id="main" className="mx-auto flex min-h-dvh w-full max-w-[1440px] items-center p-4 sm:p-6 lg:p-10">
-      <div className="grid w-full overflow-hidden rounded-card border border-border bg-white shadow-card lg:min-h-[680px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <section className="flex min-w-0 flex-col p-5 sm:p-8 lg:p-12">
-          <a href="/login" className="inline-flex w-fit items-center gap-2 font-display text-lg font-bold tracking-display text-emerald">
-            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald text-fg-on-dark">
-              <LogIn className="h-4 w-4" aria-hidden />
-            </span>
-            Elyst AI
+    <main id="main" className="lms-surface mx-auto flex min-h-dvh w-full max-w-[1440px] items-center p-4 sm:p-6 lg:p-6">
+      <div className="grid w-full overflow-hidden rounded-card border border-border bg-white shadow-card lg:min-h-[620px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <section className="flex min-w-0 flex-col p-5 sm:p-8 lg:p-8">
+          <a href="/login" className="inline-flex w-fit" aria-label="Elyst AI login">
+            <Image alt="Elyst AI" className="h-14 w-14 object-contain" height={56} priority src="/logo-emerald.svg" width={56} />
           </a>
 
-          <div className="my-auto max-w-md py-12 lg:py-16">
-            <p className="eyebrow text-emerald">AI for Work members</p>
-            <h1 className="mt-3 text-h2 text-fg">Welcome to your learning space.</h1>
+          <div className="my-auto max-w-md py-8 lg:py-10">
+            <h1 className="text-h2 text-fg">Welcome to your learning space.</h1>
             <p className="mt-3 text-small text-fg-2">
               Sign in with the account you used to join AI for Work.
             </p>
@@ -136,9 +132,8 @@ export function LoginForm({ oauthError }: LoginFormProps) {
                       />
                     </span>
                   </label>
-                  <button className="btn btn-primary pressable w-full" disabled={isSubmitting} type="submit">
+                  <button className="btn btn-primary pressable w-full rounded-md" disabled={isSubmitting} type="submit">
                     {isSubmitting ? "Sending code…" : "Email me a sign-in code"}
-                    <ArrowRight className="h-4 w-4" aria-hidden />
                   </button>
                 </form>
               ) : (
@@ -154,7 +149,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
                       ))}
                     </InputOTPGroup>
                   </InputOTP>
-                  <button className="btn btn-primary pressable w-full" disabled={isSubmitting} type="submit">
+                  <button className="btn btn-primary pressable w-full rounded-md" disabled={isSubmitting} type="submit">
                     {isSubmitting ? "Signing in…" : "Sign in"}
                     <ArrowRight className="h-4 w-4" aria-hidden />
                   </button>
@@ -191,7 +186,12 @@ export function LoginForm({ oauthError }: LoginFormProps) {
                     onClick={signInWithGoogle}
                     type="button"
                   >
-                    <ShieldCheck className="h-5 w-5 text-emerald" aria-hidden />
+                    <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 18 18">
+                      <path fill="#4285F4" d="M17.64 9.205c0-.638-.057-1.252-.164-1.842H9v3.486h4.844a4.14 4.14 0 0 1-1.797 2.718v2.258h2.909c1.703-1.568 2.684-3.875 2.684-6.62Z" />
+                      <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.175l-2.909-2.258c-.806.54-1.837.859-3.047.859-2.344 0-4.328-1.584-5.037-3.711H.956v2.333A9 9 0 0 0 9 18Z" />
+                      <path fill="#FBBC05" d="M3.963 10.715A5.41 5.41 0 0 1 3.681 9c0-.595.102-1.174.282-1.715V4.952H.956A9 9 0 0 0 0 9c0 1.452.348 2.827.956 4.048l3.007-2.333Z" />
+                      <path fill="#EA4335" d="M9 3.574c1.321 0 2.508.454 3.442 1.345l2.582-2.582C13.463.886 11.426 0 9 0A9 9 0 0 0 .956 4.952l3.007 2.333C4.672 5.158 6.656 3.574 9 3.574Z" />
+                    </svg>
                     Continue with Google
                   </button>
                 </>
@@ -219,7 +219,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/90 to-transparent p-12 pt-28">
             <p className="eyebrow text-emerald">AI for Work</p>
             <p className="mt-3 max-w-md font-display text-h2 font-bold tracking-display text-fg">
-              Make AI useful in the work you already do.
+              Make AI useful at your work.
             </p>
           </div>
         </aside>

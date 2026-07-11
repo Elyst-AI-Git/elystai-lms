@@ -12,6 +12,7 @@ interface LessonData {
   unlock_day_offset: number;
   is_preview: boolean;
   bunny_video_id: string | null;
+  youtube_id: string | null;
   duration_seconds: number | null;
   body_richtext: string | null;
   task_instructions: string | null;
@@ -28,6 +29,7 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
     unlock_day_offset: lesson.unlock_day_offset,
     is_preview: lesson.is_preview,
     bunny_video_id: lesson.bunny_video_id ?? "",
+    youtube_id: lesson.youtube_id ?? "",
     duration_seconds: lesson.duration_seconds?.toString() ?? "",
     body_richtext: lesson.body_richtext ?? "",
     task_instructions: lesson.task_instructions ?? "",
@@ -53,6 +55,7 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
       unlock_day_offset: Number(form.unlock_day_offset) || 0,
       is_preview: form.is_preview,
       bunny_video_id: form.bunny_video_id,
+      youtube_id: form.youtube_id,
       duration_seconds: form.duration_seconds ? Number(form.duration_seconds) : "",
       body_richtext: form.body_richtext,
       task_instructions: form.task_instructions,
@@ -118,6 +121,19 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
             placeholder="for video lessons"
           />
         </label>
+        <label className={label}>
+          YouTube video ID
+          <input
+            value={form.youtube_id}
+            onChange={(e) => set("youtube_id", e.target.value)}
+            className={wide}
+            placeholder="aqz-KE-bpKQ"
+          />
+          <span className="mt-1 block text-label text-fg-3">Unlisted/private YouTube video ID only (the part after watch?v=), not a full URL.</span>
+        </label>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className={label}>
           Duration (seconds)
           <input

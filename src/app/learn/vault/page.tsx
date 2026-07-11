@@ -18,7 +18,7 @@ export default async function VaultPage() {
   const { data: resources } = await supabase
     .schema("app")
     .from("resources")
-    .select("id, title, url_or_storage_path, kind, sort_order, module_id, batch_id, modules(title, position)")
+    .select("id, title, description, url_or_storage_path, kind, sort_order, module_id, batch_id, modules(title, position)")
     .eq("course_id", course.id)
     .order("sort_order", { ascending: true });
 
@@ -31,6 +31,7 @@ export default async function VaultPage() {
   interface ResourceRow {
     id: string;
     title: string;
+    description: string | null;
     url_or_storage_path: string;
     kind: string;
     sort_order: number;
@@ -95,6 +96,7 @@ export default async function VaultPage() {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-small font-bold text-fg">{resource.title}</span>
+                      {resource.description && <span className="mt-0.5 block text-label text-fg-3">{resource.description}</span>}
                       <span className="mt-0.5 block text-label text-fg-3">{resource.kind}<span className="sr-only">, opens in a new tab</span></span>
                     </span>
                     {batchOnlyIds.has(resource.id) && <span className="hidden rounded-pill bg-green/15 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald sm:inline">Your batch</span>}

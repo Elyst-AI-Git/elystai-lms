@@ -21,6 +21,38 @@ export interface Progress {
   completedLessonIds: string[];
 }
 
+export function getProgressFromRows(
+  lessons: Array<{ id: string; unlock_day_offset: number }>,
+  progressRows: Array<{ lesson_id: string }>
+): Progress {
+  const completedIds = new Set(progressRows.map((row) => row.lesson_id));
+  const byDay = new Map<number, DayProgress>();
+  let completedLessons = 0;
+
+  for (const lesson of lessons) {
+    const entry = byDay.get(lesson.unlock_day_offset) ?? {
+      day: lesson.unlock_day_offset,
+      total: 0,
+      completed: 0,
+    };
+    entry.total += 1;
+    if (completedIds.has(lesson.id)) {
+      entry.completed += 1;
+      completedLessons += 1;
+    }
+    byDay.set(lesson.unlock_day_offset, entry);
+  }
+
+  const totalLessons = lessons.length;
+  return {
+    totalLessons,
+    completedLessons,
+    overallPercent: totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
+    perDay: [...byDay.values()].sort((a, b) => a.day - b.day),
+    completedLessonIds: [...completedIds],
+  };
+}
+
 export async function getProgress(enrollmentId: string): Promise<Progress> {
   const admin = createAdminSupabaseClient();
 
@@ -53,28 +85,5 @@ export async function getProgress(enrollmentId: string): Promise<Progress> {
   if (lessonsError) throw new Error(`Failed to load lessons: ${lessonsError.message}`);
   if (progressError) throw new Error(`Failed to load progress: ${progressError.message}`);
 
-  const completedIds = new Set((progressRows ?? []).map((r) => r.lesson_id));
-  const byDay = new Map<number, DayProgress>();
-  let completedLessons = 0;
-
-  for (const lesson of lessons ?? []) {
-    const day = lesson.unlock_day_offset;
-    const entry = byDay.get(day) ?? { day, total: 0, completed: 0 };
-    entry.total += 1;
-    if (completedIds.has(lesson.id)) {
-      entry.completed += 1;
-      completedLessons += 1;
-    }
-    byDay.set(day, entry);
-  }
-
-  const totalLessons = lessons?.length ?? 0;
-  return {
-    totalLessons,
-    completedLessons,
-    overallPercent:
-      totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
-    perDay: [...byDay.values()].sort((a, b) => a.day - b.day),
-    completedLessonIds: [...completedIds],
-  };
+  return getProgressFromRows(lessons ?? [], progressRows ?? []);
 }

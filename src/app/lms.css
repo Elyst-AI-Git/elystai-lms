@@ -8,6 +8,27 @@
 :root {
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --lms-text-body: 1.0625rem;
+  --lms-text-label: 1rem;
+  --lms-text-meta: 0.9375rem;
+  --lms-leading-body: 1.58;
+  --lms-leading-label: 1.5;
+}
+
+.lms-body,
+.lms-surface .text-small {
+  font-size: var(--lms-text-body);
+  line-height: var(--lms-leading-body);
+}
+.lms-label,
+.lms-surface .text-label {
+  font-size: var(--lms-text-label);
+  line-height: var(--lms-leading-label);
+}
+.lms-meta,
+.lms-surface .text-micro {
+  font-size: var(--lms-text-meta);
+  line-height: var(--lms-leading-label);
 }
 
 /* --- press feedback: every tappable LMS element ------------------------- */
