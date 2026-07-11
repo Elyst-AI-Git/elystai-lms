@@ -47,15 +47,19 @@ export async function requireUser(): Promise<User> {
 export async function requireEnrollment(
   courseSlug: string
 ): Promise<EnrollmentContext> {
-  const user = await requireUser();
   const supabase = await createServerSupabaseClient();
-
-  const { data: course } = await supabase
-    .schema("app")
-    .from("courses")
-    .select("id, slug, title")
-    .eq("slug", courseSlug)
-    .single();
+  const [userResult, courseResult] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .schema("app")
+      .from("courses")
+      .select("id, slug, title")
+      .eq("slug", courseSlug)
+      .single(),
+  ]);
+  const user = userResult.data.user;
+  if (!user) redirect("/login");
+  const course = courseResult.data;
   if (!course) notFound();
 
   const { data: enrollments } = await supabase

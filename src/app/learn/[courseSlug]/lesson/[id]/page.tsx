@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LessonTypeIcon } from "@/components/learn/lesson-icon";
+import { FileText } from "lucide-react";
 import { Markdown } from "@/components/learn/markdown";
 import { MarkDoneBar } from "@/components/learn/mark-done-button";
-import { SubmissionForm } from "@/components/learn/submission-form";
 import { VideoEmbed } from "@/components/learn/video-embed";
 import { resolveVideoEmbed } from "@/lib/lms/video";
 import { requireEnrollment } from "@/lib/lms/auth";
@@ -22,8 +21,6 @@ const IST_DATETIME = new Intl.DateTimeFormat("en-IN", {
   hour: "numeric",
   minute: "2-digit",
 });
-
-const TYPE_LABEL: Record<string, string> = { video: "Video", text: "Lesson", task: "Task" };
 
 export default async function LessonView({
   params,
@@ -59,7 +56,7 @@ export default async function LessonView({
   const prev = courseLessons!.slice(0, index).reverse().find(unlockedNow) ?? null;
   const next = courseLessons!.slice(index + 1).find(unlockedNow) ?? null;
 
-  const [{ data: progressRow }, { data: submission }] = await Promise.all([
+  const [{ data: progressRow }, { data: materials }] = await Promise.all([
     supabase
       .schema("app")
       .from("lesson_progress")
@@ -67,15 +64,12 @@ export default async function LessonView({
       .eq("enrollment_id", enrollment.id)
       .eq("lesson_id", lesson.id)
       .maybeSingle(),
-    lesson.content_type === "task"
-      ? supabase
-          .schema("app")
-          .from("submissions")
-          .select("url, note, storage_path")
-          .eq("enrollment_id", enrollment.id)
-          .eq("lesson_id", lesson.id)
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
+    supabase
+      .schema("app")
+      .from("resources")
+      .select("id, title, description, url_or_storage_path, kind")
+      .eq("lesson_id", lesson.id)
+      .order("sort_order", { ascending: true }),
   ]);
 
   void logEvent({
@@ -103,9 +97,6 @@ export default async function LessonView({
           <Link href={dayHref} className="inline-flex min-h-11 items-center px-2 text-label text-fg-3 hover:text-emerald">
             ← Day {lesson.unlock_day_offset + 1}
           </Link>
-          <span className="rounded-pill bg-emerald/10 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald">
-            {TYPE_LABEL[lesson.content_type] ?? lesson.content_type}
-          </span>
         </div>
         <h1 className="mt-2 font-display text-h3 font-bold tracking-display text-fg">
           {lesson.title}
@@ -148,37 +139,28 @@ export default async function LessonView({
         </div>
       )}
 
-      {lesson.content_type === "task" && (
-        <>
-          {lesson.task_instructions && (
-            <div className="rise rounded-card border-l-4 border-green bg-white p-5 shadow-card" style={{ ["--stagger-i" as string]: 2 }}>
-              <p className="mb-2 flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-emerald">
-                <LessonTypeIcon type="task" className="h-3.5 w-3.5" /> Your task
-              </p>
-              <Markdown>{lesson.task_instructions}</Markdown>
-            </div>
-          )}
-          <div className="rise" style={{ ["--stagger-i" as string]: 3 }}>
-            <SubmissionForm
-              lessonId={lesson.id}
-              existing={
-                submission
-                  ? {
-                      url: submission.url,
-                      note: submission.note,
-                      hasScreenshot: Boolean(submission.storage_path),
-                    }
-                  : null
-              }
-            />
-          </div>
-          {!submission && !progressRow && (
-            <p className="text-label text-fg-3">
-              Tip: submit your work before marking this done — it helps us give you feedback.
-            </p>
-          )}
-        </>
+      {lesson.task_instructions && (
+        <div className="rise rounded-card border-l-4 border-green bg-white p-5 shadow-card" style={{ ["--stagger-i" as string]: 2 }}>
+          <p className="mb-2 text-label font-bold uppercase tracking-wide text-emerald">Today&apos;s practice</p>
+          <Markdown>{lesson.task_instructions}</Markdown>
+          <p className="mt-3 text-label text-fg-3">Share your work in the batch WhatsApp group.</p>
+        </div>
       )}
+
+      {materials?.length ? (
+        <section className="rise space-y-3" style={{ ["--stagger-i" as string]: 3 }}>
+          <div>
+            <p className="eyebrow text-emerald">Day materials</p>
+            <h2 className="mt-1 text-h3 text-fg">Use these with today&apos;s lesson.</h2>
+          </div>
+          {materials.map((material) => (
+            <a className="pressable flex min-h-16 items-center gap-3 rounded-card border border-border bg-white p-4 shadow-card hover:shadow-card-hover" href={material.url_or_storage_path} key={material.id} rel="noreferrer" target="_blank">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald"><FileText className="h-5 w-5" aria-hidden /></span>
+              <span className="min-w-0 flex-1"><span className="block text-small font-bold text-fg">{material.title}</span>{material.description && <span className="mt-1 block text-label text-fg-3">{material.description}</span>}<span className="sr-only">, opens in a new tab</span></span>
+            </a>
+          ))}
+        </section>
+      ) : null}
 
       {/* prev/next continuity */}
       <nav className="flex items-center justify-between gap-4 border-t border-border pt-4 text-label">

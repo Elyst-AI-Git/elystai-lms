@@ -16,6 +16,7 @@ type LessonSummary = {
   duration_seconds: number | null;
   unlock_day_offset: number;
   is_preview: boolean;
+  isUnlocked: boolean;
 };
 
 const TYPE_LABEL: Record<string, string> = { video: "Watch", text: "Read", task: "Build" };
@@ -32,7 +33,7 @@ export function LearningPlanCanvas({
   today: number;
 }) {
   const completed = new Set(completedLessonIds);
-  const nextLesson = selectNextLesson(lessons, completedLessonIds);
+  const nextLesson = selectNextLesson(lessons.filter((lesson) => lesson.isUnlocked), completedLessonIds);
   const queuedLessons = nextLesson ? selectQueuedLessons(lessons, nextLesson.id) : [];
   const { headline, badge } = planHeadline(nextLesson, today);
 
@@ -55,23 +56,23 @@ export function LearningPlanCanvas({
               <ol className="mt-3 divide-y divide-border">
                 {queuedLessons.map((lesson, index) => {
                   const isDone = completed.has(lesson.id);
-                  const isNext = lesson.id === nextLesson.id;
                   const duration = formatDurationLabel(lesson.duration_seconds);
-                  return (
-                    <li className="flex min-h-16 items-center gap-3 py-2" key={lesson.id}>
-                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-pill text-label font-bold ${isDone ? "bg-emerald text-fg-on-dark" : isNext ? "bg-green text-ink" : "bg-white text-fg-2"}`}>
-                        {isDone ? <Check className="h-4 w-4" aria-hidden /> : index + 1}
+                  const row = (
+                    <>
+                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-pill text-label font-bold ${isDone ? "bg-emerald text-fg-on-dark" : lesson.isUnlocked ? "bg-white text-fg-2" : "bg-surface-muted text-fg-3"}`}>
+                        {isDone ? <Check className="h-4 w-4" aria-hidden /> : lesson.isUnlocked ? index + 1 : <LockKeyhole className="h-4 w-4" aria-label="Locked" />}
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-small font-bold text-fg">{lesson.title}</span>
                         <span className="mt-0.5 flex items-center gap-1.5 text-label text-fg-3">
                           <LessonTypeIcon className="h-3.5 w-3.5" type={lesson.content_type} />
-                          {isDone ? "Complete" : TYPE_LABEL[lesson.content_type] ?? "Lesson"}
+                          {isDone ? "Complete" : lesson.isUnlocked ? TYPE_LABEL[lesson.content_type] ?? "Lesson" : "Locked"}
                           {duration && <><span aria-hidden>•</span>{duration}</>}
                         </span>
                       </span>
-                    </li>
+                    </>
                   );
+                  return <li key={lesson.id}>{lesson.isUnlocked ? <Link className="flex min-h-16 items-center gap-3 py-2" href={`/learn/${courseSlug}/lesson/${lesson.id}`}>{row}</Link> : <div className="flex min-h-16 items-center gap-3 py-2 opacity-60">{row}</div>}</li>;
                 })}
               </ol>
             ) : (
