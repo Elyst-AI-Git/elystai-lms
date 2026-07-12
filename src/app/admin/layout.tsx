@@ -1,14 +1,17 @@
-import { FolderOpen, Inbox, LibraryBig, TrendingUp } from "lucide-react";
+import { CalendarClock, FolderOpen, LibraryBig, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/lms/auth";
 
 export const dynamic = "force-dynamic";
 
+// Submissions is intentionally omitted: batch 1 has no learner submissions, so
+// the surface is dormant. Schedule (batch launch date) replaces it — that's the
+// operation that actually drives the current product.
 const NAV = [
   { href: "/admin/content", label: "Content", Icon: LibraryBig },
   { href: "/admin/content/resources", label: "Resources", Icon: FolderOpen },
+  { href: "/admin/schedule", label: "Schedule", Icon: CalendarClock },
   { href: "/admin/progress", label: "Progress", Icon: TrendingUp },
-  { href: "/admin/submissions", label: "Submissions", Icon: Inbox },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

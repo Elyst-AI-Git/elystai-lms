@@ -181,27 +181,30 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
         />
       </label>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <label className={label}>
-          Live class link (Meet/Zoom)
-          <input
-            type="url"
-            value={form.live_link}
-            onChange={(e) => set("live_link", e.target.value)}
-            className={wide}
-            placeholder="https://meet.google.com/…"
-          />
-        </label>
-        <label className={label}>
-          Live class time (IST)
-          <input
-            type="datetime-local"
-            value={form.live_starts_at}
-            onChange={(e) => set("live_starts_at", e.target.value)}
-            className={wide}
-          />
-        </label>
-      </div>
+      <details className="rounded-md border border-border bg-surface-muted p-3">
+        <summary className="cursor-pointer text-label font-semibold text-fg-3">Legacy live-session fields (not used in the current batch)</summary>
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label className={label}>
+            Live class link (Meet/Zoom)
+            <input
+              type="url"
+              value={form.live_link}
+              onChange={(e) => set("live_link", e.target.value)}
+              className={wide}
+              placeholder="https://meet.google.com/…"
+            />
+          </label>
+          <label className={label}>
+            Live class time (IST)
+            <input
+              type="datetime-local"
+              value={form.live_starts_at}
+              onChange={(e) => set("live_starts_at", e.target.value)}
+              className={wide}
+            />
+          </label>
+        </div>
+      </details>
 
       <div className="flex items-center gap-3">
         <button type="submit" disabled={busy} className={buttonClass}>

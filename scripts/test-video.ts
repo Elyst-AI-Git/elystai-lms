@@ -20,7 +20,7 @@ const LIB = "12345";
 check(
   "youtube id → youtube-nocookie embed",
   resolveVideoEmbed({ youtubeId: "aqz-KE-bpKQ", bunnyVideoId: null, bunnyLibraryId: LIB }),
-  { provider: "youtube", url: "https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ?rel=0" } as VideoEmbed
+  { provider: "youtube", url: "https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&color=white" } as VideoEmbed
 );
 check(
   "youtube wins even when bunny id also present",
