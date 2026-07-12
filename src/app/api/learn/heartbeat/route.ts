@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getEnrollmentForLesson } from "@/lib/lms/auth";
+import { getEnrollmentForLesson, getUserOrNull } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
 import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
@@ -10,6 +10,10 @@ import { logEvent } from "@/lib/logging";
  * lesson_progress. Best-effort by design.
  */
 export async function POST(req: NextRequest) {
+  if (!(await getUserOrNull())) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
   let body: { lessonId?: unknown; positionSeconds?: unknown };
   try {
     body = await req.json();

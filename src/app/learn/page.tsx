@@ -72,14 +72,14 @@ export default async function LearnDashboard() {
       </header>
 
       <section aria-label="Course overview" className="rise order-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3" style={{ ["--stagger-i" as string]: 1 }}>
-        <StatStrip label="Course progress" tone="bg-white" right={<ProgressRing percent={progress.overallPercent} size={36} />} />
+        <StatStrip label="Course progress" tone="bg-white" right={<ProgressRing percent={progress.overallPercent} size={48} />} />
         <StatStrip label="Lessons done" tone="bg-green/5" reverseOnMobile value={`${progress.completedLessons} of ${progress.totalLessons}`} />
         <StatStrip label="Cohort rhythm" tone="bg-green/10" value={today >= 0 ? `Day ${today + 1} of ${progress.perDay.length}` : `Day 1 of ${progress.perDay.length}`} />
       </section>
 
       <div className="order-3 grid min-w-0 gap-6 lg:h-[max(28.5rem,calc(100dvh-26rem))] lg:grid-cols-[minmax(0,1fr)_20rem] lg:grid-rows-[minmax(0,1fr)]">
         <div className="rise lg:h-full" style={{ ["--stagger-i" as string]: 2 }}>
-          <LearningPlanCanvas batchStartsOn={batch.starts_on} courseSlug={course.slug} completedLessonIds={completedLessonIds} lessons={allLessons} today={today} />
+          <LearningPlanCanvas courseSlug={course.slug} completedLessonIds={completedLessonIds} lessons={allLessons} today={today} />
         </div>
         <div className="rise lg:h-full" style={{ ["--stagger-i" as string]: 3 }}>
           <CoursePath courseSlug={course.slug} perDay={progress.perDay} today={today} />

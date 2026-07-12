@@ -1,7 +1,6 @@
 import { ArrowRight, Check, CircleCheckBig, LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import { NextLessonCard } from "@/components/learn/next-lesson-card";
-import { unlockDate } from "@/lib/lms/drip";
 import {
   planHeadline,
   queuedLessons as selectQueuedLessons,
@@ -18,25 +17,16 @@ type LessonSummary = {
   isUnlocked: boolean;
 };
 
-const IST_DATE = new Intl.DateTimeFormat("en-IN", {
-  timeZone: "Asia/Kolkata",
-  weekday: "short",
-  day: "numeric",
-  month: "short",
-});
-
 export function LearningPlanCanvas({
   courseSlug,
   lessons,
   completedLessonIds,
   today,
-  batchStartsOn,
 }: {
   courseSlug: string;
   lessons: LessonSummary[];
   completedLessonIds: string[];
   today: number;
-  batchStartsOn: string;
 }) {
   const completed = new Set(completedLessonIds);
   const nextLesson = selectNextLesson(lessons.filter((lesson) => lesson.isUnlocked), completedLessonIds);
@@ -61,17 +51,13 @@ export function LearningPlanCanvas({
               <ol className="mt-4 space-y-1">
                 {queuedLessons.map((lesson, index) => {
                   const isDone = completed.has(lesson.id);
-                  const dateLabel = `Day ${lesson.unlock_day_offset + 1} · ${IST_DATE.format(unlockDate(lesson.unlock_day_offset, batchStartsOn))}`;
                   const row = (
                     <>
                       <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-label font-bold ${isDone ? "bg-emerald text-fg-on-dark" : lesson.isUnlocked ? "bg-white text-fg-2" : "bg-surface-muted text-fg-3"}`}>
                         {isDone ? <Check className="h-4 w-4" aria-hidden /> : lesson.isUnlocked ? index + 1 : <LockKeyhole className="h-4 w-4" aria-label="Locked" />}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-small font-bold leading-snug text-fg">{lesson.title}</span>
-                        <span className="mt-1 block text-label text-fg-3">
-                          {isDone ? "Complete" : lesson.isUnlocked ? dateLabel : `${dateLabel} · Locked`}
-                        </span>
+                        <span className="block text-[1.2rem] font-bold leading-snug text-fg">{lesson.title} (Day {lesson.unlock_day_offset + 1})</span>
                       </span>
                       <ArrowRight className={`h-4 w-4 shrink-0 ${lesson.isUnlocked ? "text-fg-3" : "text-border"}`} aria-hidden />
                     </>
