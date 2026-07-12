@@ -27,6 +27,14 @@ async function mint(email: string) {
 }
 
 export default async function globalSetup() {
+  // The drip accelerator (DRIP_INTERVAL_MINUTES) makes unlock state shift every
+  // few minutes, which turns drip-dependent assertions flaky. E2E must run
+  // against stable daily drip — start the dev server with it UNSET.
+  if (process.env.DRIP_INTERVAL_MINUTES) {
+    console.warn(
+      "\n⚠️  DRIP_INTERVAL_MINUTES is set — unlock state will shift mid-run and cause flaky failures.\n   Run the E2E dev server WITHOUT it for stable drip.\n"
+    );
+  }
   const dir = path.join(__dirname, ".auth");
   fs.mkdirSync(dir, { recursive: true });
   for (const [name, email] of Object.entries(USERS)) {

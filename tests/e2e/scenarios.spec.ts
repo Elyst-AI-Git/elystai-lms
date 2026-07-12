@@ -43,20 +43,31 @@ test.describe("enrolled journeys", () => {
 
   test("dashboard renders core widgets", async ({ page }) => {
     await page.goto("/learn");
-    await expect(page.getByText(/learning plan/i)).toBeVisible();
-    await expect(page.getByText(/cohort rhythm/i)).toBeVisible();
+    // Use unique strings, not /learning plan/i which matches both the h1 and the
+    // eyebrow (strict-mode violation).
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByText("Cohort rhythm")).toBeVisible();
+    await expect(page.getByText("Course progress")).toBeVisible();
   });
 
   test("open first unlocked lesson, mark done, then un-mark (idempotent round-trip)", async ({ page }) => {
     await page.goto("/learn");
-    await page.locator('a[href*="/lesson/"]').first().click();
+    // The "Start this lesson" CTA is the next-step lesson, which is unlocked by
+    // construction — unlike an arbitrary first /lesson/ link.
+    await page.getByRole("link", { name: /start this lesson/i }).click();
     await expect(page).toHaveURL(/\/lesson\//);
-    const mark = page.getByRole("button", { name: /mark as complete/i });
+    const mark = page.getByRole("button", { name: /^mark as complete$/i });
     if (await mark.count()) {
+      // Assert the round-trip at the network layer — more robust than scraping
+      // button text, which can race with router.refresh().
+      const done = page.waitForResponse((r) => r.url().includes("/api/learn/progress") && r.request().method() === "POST");
       await mark.click();
-      await expect(page.getByText(/completed/i)).toBeVisible();
+      expect((await done).status()).toBe(200);
+      await expect(page.getByRole("button", { name: /^completed$/i })).toBeVisible();
       // un-mark to leave state clean
-      await page.getByRole("button", { name: /completed/i }).click();
+      const undo = page.waitForResponse((r) => r.url().includes("/api/learn/progress") && r.request().method() === "POST");
+      await page.getByRole("button", { name: /^completed$/i }).click();
+      await undo;
     }
   });
 
