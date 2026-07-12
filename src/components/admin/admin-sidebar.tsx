@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarClock, FolderOpen, GraduationCap, LibraryBig, TrendingUp } from "lucide-react";
+import { CalendarClock, CircleHelp, FolderOpen, GraduationCap, LibraryBig, TrendingUp } from "lucide-react";
 
 // Submissions is intentionally omitted: batch 1 has no learner submissions, so
 // the surface is dormant. Schedule (batch launch date) replaces it — that's the
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/admin/content/resources", label: "Resources", Icon: FolderOpen, exact: false },
   { href: "/admin/schedule", label: "Schedule", Icon: CalendarClock, exact: false },
   { href: "/admin/progress", label: "Progress", Icon: TrendingUp, exact: false },
+  { href: "/admin/guide", label: "Guide", Icon: CircleHelp, exact: false },
 ];
 
 /**

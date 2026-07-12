@@ -212,8 +212,8 @@ test.describe("admin console", () => {
       await page.goto("/admin/content/resources");
       const section = page.locator("section").filter({ hasText: "AI for Work" }).first();
       await section.getByText("+ Add a resource").click();
-      await section.getByLabel("Title", { exact: false }).fill(PDF);
-      await section.getByLabel(/Link \(PDF or page URL\)/).fill("https://pdfobject.com/pdf/sample.pdf");
+      await section.getByRole("textbox", { name: "Title", exact: true }).fill(PDF);
+      await section.getByLabel(/or paste a link instead/).fill("https://pdfobject.com/pdf/sample.pdf");
       await section.getByLabel(/Day it belongs to/).selectOption({ label: LESSON });
       await section.getByRole("button", { name: "Add resource" }).click();
       await expect(section.getByText(PDF)).toBeVisible();
@@ -365,4 +365,70 @@ test.describe("admin console", () => {
 test("resources POST anonymously is 403", async ({ request }) => {
   const r = await request.post("/api/admin/content/resources", { data: { title: "hax" } });
   expect(r.status()).toBe(403);
+});
+
+test("PDF upload anonymously is 403", async ({ request }) => {
+  const r = await request.post("/api/admin/content/upload", {
+    multipart: { file: { name: "x.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 test") } },
+  });
+  expect(r.status()).toBe(403);
+});
+
+// ---------------------------------------------------------------------------
+// Guide + PDF upload (admin persona)
+// ---------------------------------------------------------------------------
+test.describe("guide and uploads", () => {
+  test.use({ storageState: ADMIN_STATE });
+
+  test("Guide is in the nav and answers the everyday questions", async ({ page }) => {
+    await page.goto("/admin/guide");
+    await expect(page.getByRole("heading", { name: "Guide", level: 1 })).toBeVisible();
+    await expect(page.getByText("Put up today's video")).toBeVisible();
+    await expect(page.getByText("Add the day's PDF")).toBeVisible();
+    await expect(page.getByText(/4:00 AM IST/).first()).toBeVisible();
+    await expect(page.getByText("Running late with content? Relax.")).toBeVisible();
+    // reachable from the sidebar too
+    await expect(page.getByLabel("Admin workspace").getByRole("link", { name: "Guide" })).toBeVisible();
+  });
+
+  test("upload a local PDF end-to-end: hosted URL stored, then cleaned up", async ({ page }) => {
+    const title = `E2E Upload PDF ${RUN}`;
+    await page.goto("/admin/content/resources");
+    const section = page.locator("section").filter({ hasText: "AI for Work" }).first();
+    await section.getByText("+ Add a resource").click();
+    await section.getByRole("textbox", { name: "Title", exact: true }).fill(title);
+    await section.getByLabel(/Upload a PDF from your computer/).setInputFiles({
+      name: "e2e-material.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from(`%PDF-1.4\n% e2e scratch material ${RUN}\n%%EOF`),
+    });
+    await section.getByRole("button", { name: "Add resource" }).click();
+
+    const row = section.locator("li").filter({ hasText: title });
+    await expect(row).toBeVisible();
+    // the stored link must be OUR hosted storage URL, not a placeholder
+    const href = await row.getByRole("link", { name: title }).getAttribute("href");
+    expect(href).toContain("/storage/v1/object/public/materials/");
+    expect(href).toContain("e2e-material");
+
+    // the hosted file is actually publicly fetchable
+    const res = await page.request.get(href!);
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("pdf");
+
+    // cleanup: delete the resource row (the storage object is test debris in a
+    // TEST-only bucket; rows are what learners see)
+    page.once("dialog", (d) => d.accept());
+    await row.getByRole("button", { name: "Delete" }).click();
+    await expect(section.getByText(title)).toHaveCount(0);
+  });
+
+  test("form refuses to submit with neither a file nor a link", async ({ page }) => {
+    await page.goto("/admin/content/resources");
+    const section = page.locator("section").filter({ hasText: "AI for Work" }).first();
+    await section.getByText("+ Add a resource").click();
+    await section.getByRole("textbox", { name: "Title", exact: true }).fill("no source");
+    await section.getByRole("button", { name: "Add resource" }).click();
+    await expect(section.getByText(/one of the two is required/)).toBeVisible();
+  });
 });

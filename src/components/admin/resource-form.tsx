@@ -28,13 +28,39 @@ export function ResourceForm({
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const data = new FormData(formEl);
+    const pdf = data.get("pdf");
+    let url = String(data.get("url") ?? "").trim();
+
+    if (!(pdf instanceof File && pdf.size > 0) && !url) {
+      setError("Choose a PDF from your computer or paste a link - one of the two is required.");
+      return;
+    }
+
     setBusy(true);
+    setError(null);
+
+    // A chosen file wins over a pasted link: upload it first, then store the
+    // permanent public URL the server returns.
+    if (pdf instanceof File && pdf.size > 0) {
+      const upload = new FormData();
+      upload.append("file", pdf);
+      const res = await fetch("/api/admin/content/upload", { method: "POST", body: upload });
+      const body = await res.json().catch(() => null);
+      if (!res.ok || !body?.url) {
+        setBusy(false);
+        setError(body?.error ?? `Upload failed (${res.status})`);
+        return;
+      }
+      url = body.url as string;
+    }
+
     const problem = await adminFetch("/api/admin/content/resources", "POST", {
       course_id: courseId,
       title: String(data.get("title") ?? "").trim(),
       description: String(data.get("description") ?? "").trim(),
-      url_or_storage_path: String(data.get("url") ?? "").trim(),
+      url_or_storage_path: url,
       kind: String(data.get("kind") ?? "link"),
       module_id: String(data.get("module_id") ?? "") || "",
       lesson_id: String(data.get("lesson_id") ?? "") || "",
@@ -44,7 +70,7 @@ export function ResourceForm({
     setBusy(false);
     setError(problem);
     if (!problem) {
-      (e.target as HTMLFormElement).reset?.();
+      formEl.reset?.();
       router.refresh();
     }
   }
@@ -65,8 +91,18 @@ export function ResourceForm({
           <input name="description" placeholder="Shown under the title" className={control} />
         </label>
         <label className={field}>
-          Link (PDF or page URL)
-          <input name="url" type="url" placeholder="https://…" required className={control} />
+          Upload a PDF from your computer
+          <input
+            name="pdf"
+            type="file"
+            accept="application/pdf"
+            className={`${control} cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-emerald file:px-3 file:py-1.5 file:text-label file:font-bold file:text-fg-on-dark`}
+          />
+          <span className="mt-1 block text-label font-normal text-fg-3">PDF up to 25 MB - we host it for you.</span>
+        </label>
+        <label className={field}>
+          &hellip;or paste a link instead
+          <input name="url" type="url" placeholder="https://…" className={control} />
         </label>
         <label className={field}>
           Kind
