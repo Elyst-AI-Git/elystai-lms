@@ -1,4 +1,3 @@
-import { CalendarDays, CheckCircle2 } from "lucide-react";
 import { CoursePath } from "@/components/learn/course-path";
 import { LearningPlanCanvas } from "@/components/learn/learning-plan-canvas";
 import { ProgressRing } from "@/components/learn/progress-ring";
@@ -10,14 +9,31 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-function StatCard({ icon, label, value, tone }: { icon: React.ReactNode; label: string; value: string; tone: string }) {
-  // Fixed slots for icon AND label so the three value lines share one
-  // baseline even when a label wraps to two lines at narrow widths.
-  return <div className={`grid min-w-0 grid-rows-[3rem_minmax(3rem,auto)_auto] rounded-md border border-border p-3 sm:p-4 ${tone}`}>
-    <div className="flex h-12 items-center">{icon}</div>
-    <p className="min-w-0 self-start text-center text-micro font-bold uppercase tracking-wide text-fg-3 sm:text-left">{label}</p>
-    <p className="mt-1 min-w-0 self-end text-small font-bold text-fg">{value}</p>
-  </div>;
+function StatStrip({
+  label,
+  value,
+  right,
+  reverseOnMobile = false,
+  tone,
+}: {
+  label: string;
+  value?: string;
+  right?: React.ReactNode;
+  reverseOnMobile?: boolean;
+  tone: string;
+}) {
+  // reverseOnMobile flips label/value order on mobile only (sm: restores it),
+  // giving the alternating strip pattern the dashboard asks for.
+  return (
+    <div
+      className={`flex items-center justify-between gap-3 rounded-md border border-border px-4 py-3 ${tone} ${
+        reverseOnMobile ? "flex-row-reverse sm:flex-row" : ""
+      }`}
+    >
+      <p className="min-w-0 text-micro font-bold uppercase tracking-wide text-fg-3">{label}</p>
+      {right ?? <p className="shrink-0 text-h3 font-bold leading-none text-fg">{value}</p>}
+    </div>
+  );
 }
 
 export default async function LearnDashboard() {
@@ -55,10 +71,10 @@ export default async function LearnDashboard() {
         </div>
       </header>
 
-      <section aria-label="Course overview" className="rise order-2 grid grid-cols-3 gap-2 sm:gap-3" style={{ ["--stagger-i" as string]: 1 }}>
-        <StatCard icon={<ProgressRing percent={progress.overallPercent} size={44} />} label="Course progress" value={`${progress.overallPercent}% complete`} tone="bg-white" />
-        <StatCard icon={<CheckCircle2 className="h-6 w-6 text-emerald" aria-hidden />} label="Lessons done" value={`${progress.completedLessons} of ${progress.totalLessons}`} tone="bg-green/5" />
-        <StatCard icon={<CalendarDays className="h-6 w-6 text-emerald" aria-hidden />} label="Cohort rhythm" value={today >= 0 ? `Day ${today + 1} of ${progress.perDay.length}` : `Day 1 of ${progress.perDay.length}`} tone="bg-green/10" />
+      <section aria-label="Course overview" className="rise order-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3" style={{ ["--stagger-i" as string]: 1 }}>
+        <StatStrip label="Course progress" tone="bg-white" right={<ProgressRing percent={progress.overallPercent} size={36} />} />
+        <StatStrip label="Lessons done" tone="bg-green/5" reverseOnMobile value={`${progress.completedLessons} of ${progress.totalLessons}`} />
+        <StatStrip label="Cohort rhythm" tone="bg-green/10" value={today >= 0 ? `Day ${today + 1} of ${progress.perDay.length}` : `Day 1 of ${progress.perDay.length}`} />
       </section>
 
       <div className="order-3 grid min-w-0 gap-6 lg:h-[max(28.5rem,calc(100dvh-26rem))] lg:grid-cols-[minmax(0,1fr)_20rem] lg:grid-rows-[minmax(0,1fr)]">
