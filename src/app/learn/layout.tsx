@@ -24,11 +24,11 @@ export default async function LearnLayout({ children }: { children: React.ReactN
             <Image alt="Elyst AI" className="h-9 w-auto" height={36} src="/logo-wordmark.svg" width={112} priority />
           </Link>
         </header>
-        <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 pb-28 pt-5 lg:px-8 lg:pb-10 lg:pt-6">
+        <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 pb-3 pt-5 lg:px-8 lg:pb-4 lg:pt-6">
           {children}
         </main>
-        <footer className="px-4 pb-28 text-center text-label text-fg-3 lg:hidden">
-          <span className="block">Elyst AI Learning Portal - Version 1.0</span>
+        <footer className="px-4 pb-28 pt-4 text-center text-label text-fg-3 lg:pb-8">
+          <span className="block">Accelerator Hub - Version 1.0</span>
           <span className="mt-1 block">Got a feedback? <a className="font-bold text-emerald underline-offset-4 hover:underline" href="https://wa.me/919633288931" rel="noreferrer" target="_blank">Share it here</a></span>
         </footer>
       </div>

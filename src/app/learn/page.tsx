@@ -15,7 +15,7 @@ function StatCard({ icon, label, value, tone }: { icon: React.ReactNode; label: 
   // baseline even when a label wraps to two lines at narrow widths.
   return <div className={`grid min-w-0 grid-rows-[3rem_minmax(3rem,auto)_auto] rounded-md border border-border p-3 sm:p-4 ${tone}`}>
     <div className="flex h-12 items-center">{icon}</div>
-    <p className="min-w-0 self-start text-micro font-bold uppercase tracking-wide text-fg-3">{label}</p>
+    <p className="min-w-0 self-start text-center text-micro font-bold uppercase tracking-wide text-fg-3 sm:text-left">{label}</p>
     <p className="mt-1 min-w-0 self-end text-small font-bold text-fg">{value}</p>
   </div>;
 }

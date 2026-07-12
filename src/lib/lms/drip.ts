@@ -11,6 +11,33 @@ const IST_OFFSET_MINUTES = 330; // UTC+05:30, constant - IST has no DST
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /**
+ * TEST-ONLY time compression. When DRIP_INTERVAL_MINUTES is set (e.g. "2"),
+ * the "one day" unlock cadence is replaced by that many real minutes, anchored
+ * at DRIP_TEST_ANCHOR (ISO instant) or, failing that, IST-midnight of
+ * starts_on. This lets a reviewer watch all 14 days unlock in ~28 minutes.
+ * Unset in prod → returns null → the real calendar-day logic below runs
+ * unchanged, so all unit tests (which never set the env) are unaffected.
+ */
+function testIntervalMs(): number | null {
+  const raw = process.env.DRIP_INTERVAL_MINUTES;
+  if (!raw) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n * 60 * 1000 : null;
+}
+
+/**
+ * Instant day-0 unlocks in test mode. Explicit DRIP_TEST_ANCHOR wins; else
+ * the moment this module first loaded (≈ dev-server start), so a reviewer just
+ * runs `npm run dev` and day 0 is live, day 1 unlocks one interval later.
+ */
+const TEST_MODE_LOAD_MS = Date.now();
+function testAnchorMs(): number {
+  const anchor = process.env.DRIP_TEST_ANCHOR;
+  const parsed = anchor ? Date.parse(anchor) : NaN;
+  return Number.isFinite(parsed) ? parsed : TEST_MODE_LOAD_MS;
+}
+
+/**
  * The IST calendar date containing `now`, as days since the Unix epoch.
  */
 function istEpochDay(now: Date): number {
@@ -33,6 +60,10 @@ function startEpochDay(batchStartsOn: string): number {
  * Negative before the batch starts.
  */
 export function currentDayNumber(batchStartsOn: string, now: Date): number {
+  const intervalMs = testIntervalMs();
+  if (intervalMs !== null) {
+    return Math.floor((now.getTime() - testAnchorMs()) / intervalMs);
+  }
   return istEpochDay(now) - startEpochDay(batchStartsOn);
 }
 
@@ -55,6 +86,10 @@ export function isUnlocked(
  * day) - used by the UI to show "unlocks on …" for locked days.
  */
 export function unlockDate(unlockDayOffset: number, batchStartsOn: string): Date {
+  const intervalMs = testIntervalMs();
+  if (intervalMs !== null) {
+    return new Date(testAnchorMs() + unlockDayOffset * intervalMs);
+  }
   const epochDay = startEpochDay(batchStartsOn) + unlockDayOffset;
   return new Date(epochDay * MS_PER_DAY - IST_OFFSET_MINUTES * 60 * 1000);
 }

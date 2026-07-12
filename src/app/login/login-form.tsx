@@ -100,7 +100,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
   }
 
   return (
-    <main id="main" className="lms-surface mx-auto flex min-h-dvh w-full max-w-[1440px] items-center p-4 sm:p-6 lg:p-6">
+    <main id="main" className="lms-surface flex min-h-dvh w-full items-center bg-green/10 p-4 sm:p-6 lg:mx-auto lg:max-w-[1440px] lg:bg-transparent lg:p-6">
       <div className="grid w-full overflow-hidden rounded-card border border-border bg-white shadow-card lg:min-h-[620px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <section className="mx-auto flex w-full min-w-0 max-w-md flex-col p-5 sm:p-8 lg:px-10 lg:py-8">
           <a href="/login" className="inline-flex w-fit" aria-label="Elyst AI login">

@@ -116,7 +116,6 @@ export default async function LessonView({
         <div className="rise rounded-md border-l-4 border-green bg-white p-5 shadow-card" style={{ ["--stagger-i" as string]: 2 }}>
           <p className="mb-2 text-label font-bold uppercase tracking-wide text-emerald">Today&apos;s practice</p>
           <Markdown>{lesson.task_instructions}</Markdown>
-          <p className="mt-3 text-label text-fg-3">Share your work in the batch WhatsApp group.</p>
         </div>
       )}
 
@@ -143,7 +142,7 @@ export default async function LessonView({
       />
 
       {/* prev/next continuity */}
-      <nav className="flex items-center justify-between gap-4 border-t border-border pt-4 text-small font-bold">
+      <nav className="flex items-center justify-between gap-4 pt-1 text-small font-bold">
         {prev ? (
           <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="inline-flex min-h-11 min-w-0 items-center gap-2 px-2 text-fg-2 hover:text-emerald">
             <ArrowLeft className="h-5 w-5" aria-hidden /> Day {prev.unlock_day_offset + 1}
