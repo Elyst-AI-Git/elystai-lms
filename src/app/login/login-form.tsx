@@ -102,12 +102,12 @@ export function LoginForm({ oauthError }: LoginFormProps) {
   return (
     <main id="main" className="lms-surface mx-auto flex min-h-dvh w-full max-w-[1440px] items-center p-4 sm:p-6 lg:p-6">
       <div className="grid w-full overflow-hidden rounded-card border border-border bg-white shadow-card lg:min-h-[620px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <section className="flex min-w-0 flex-col p-5 sm:p-8 lg:p-8">
+        <section className="mx-auto flex w-full min-w-0 max-w-md flex-col p-5 sm:p-8 lg:px-10 lg:py-8">
           <a href="/login" className="inline-flex w-fit" aria-label="Elyst AI login">
             <Image alt="Elyst AI" className="h-12 w-auto object-contain" height={60} priority src="/logo-wordmark.svg" width={186} />
           </a>
 
-          <div className="my-auto max-w-md py-8 lg:py-10">
+          <div className="my-auto py-8 lg:py-10">
             <h1 className="text-h2 text-fg">Welcome to your learning space.</h1>
             <p className="mt-3 text-small text-fg-2">
               Sign in with the account you used to join AI for Work.
@@ -138,12 +138,12 @@ export function LoginForm({ oauthError }: LoginFormProps) {
                 </form>
               ) : (
                 <form className="space-y-5" onSubmit={verifyCode}>
-                  <div>
+                  <div className="text-center">
                     <p className="text-small font-bold text-fg">Enter your 6-digit code</p>
                     <p className="mt-1 text-label text-fg-3">We sent it to {email.trim()}.</p>
                   </div>
                   <InputOTP disabled={isSubmitting} maxLength={6} onChange={setCode} value={code}>
-                    <InputOTPGroup className="w-full justify-between gap-1.5 sm:justify-start sm:gap-2">
+                    <InputOTPGroup className="w-full justify-center gap-1.5 sm:gap-2">
                       {Array.from({ length: 6 }, (_, index) => (
                         <InputOTPSlot className="h-11 w-10 sm:h-12 sm:w-11" index={index} key={index} />
                       ))}
@@ -154,7 +154,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
                     <ArrowRight className="h-4 w-4" aria-hidden />
                   </button>
                   <button
-                    className="text-label font-bold text-emerald underline-offset-4 hover:underline"
+                    className="block w-full text-center text-label font-bold text-emerald underline-offset-4 hover:underline"
                     onClick={() => {
                       setCode("");
                       setError("");
@@ -199,10 +199,10 @@ export function LoginForm({ oauthError }: LoginFormProps) {
             </div>
           </div>
 
-          <p className="text-label text-fg-3">
+          <p className="text-center text-label text-fg-3">
             New to AI for Work?{" "}
-            <a className="font-bold text-emerald underline-offset-4 hover:underline" href="https://elystai.com/ai-for-work">
-              Register at elystai.com
+            <a className="mt-1 block font-bold text-emerald underline-offset-4 hover:underline" href="https://elystai.com/ai-for-work">
+              Join here
             </a>
           </p>
         </section>
@@ -218,7 +218,7 @@ export function LoginForm({ oauthError }: LoginFormProps) {
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/90 to-transparent p-12 pt-28">
             <p className="eyebrow text-emerald">AI for Work</p>
-            <p className="mt-3 whitespace-nowrap font-display text-h2 font-bold tracking-display text-fg">
+            <p className="mt-1 whitespace-nowrap font-display text-h2 font-bold tracking-display text-fg">
               Make AI useful at your work.
             </p>
           </div>

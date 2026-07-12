@@ -19,12 +19,12 @@ export default async function LearnLayout({ children }: { children: React.ReactN
     <div className="lms-surface min-h-dvh lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
       <DesktopSidebar email={user.email ?? ""} name={name} />
       <div className="flex min-w-0 flex-col">
-        <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 pt-4 lg:px-8 lg:pt-6">
-          <Link className="lg:hidden" href="/learn">
+        <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 pt-4 lg:hidden">
+          <Link href="/learn">
             <Image alt="Elyst AI" className="h-9 w-auto" height={36} src="/logo-wordmark.svg" width={112} priority />
           </Link>
         </header>
-        <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 pb-28 pt-5 lg:px-8 lg:pb-10 lg:pt-7">
+        <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 pb-28 pt-5 lg:px-8 lg:pb-10 lg:pt-6">
           {children}
         </main>
         <footer className="px-4 pb-28 text-center text-label text-fg-3 lg:hidden">

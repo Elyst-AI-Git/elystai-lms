@@ -38,9 +38,11 @@ export function DesktopSidebar({ email, name }: { email: string; name: string | 
           );
         })}
       </nav>
-      <div className="mt-10 border-t border-white/15 pt-5">
+      <div className="mt-8 border-t border-white/15 pt-4">
         <p className="px-3 text-center lms-meta text-fg-muted-dark">Got a feedback? <a className="font-bold text-green underline-offset-4 hover:underline" href="https://wa.me/919633288931" rel="noreferrer" target="_blank">Share it here</a></p>
-        <div className="mt-4 px-3">
+      </div>
+      <div className="mt-auto pt-8">
+        <div className="px-3">
           <p className="lms-label font-bold text-fg-on-dark">{name ?? "AI for Work learner"}</p>
           <p className="mt-1 truncate lms-meta text-fg-muted-dark">{email}</p>
         </div>
