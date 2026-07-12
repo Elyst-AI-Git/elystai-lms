@@ -3,11 +3,21 @@
  *
  * All day boundaries are fixed to Asia/Kolkata (UTC+05:30, no DST) regardless
  * of server or learner timezone: the whole cohort - India and GCC - unlocks
- * at the same instant (midnight IST ≈ 22:30 Gulf). Pure functions only; no
- * Supabase, no env, so they are unit-testable with fixed dates.
+ * at the same instant. Days unlock at 04:00 IST (= 02:30 Gulf), NOT midnight:
+ * a midnight boundary let India night-owls see the next day while the GCC was
+ * still mid-evening on the previous one, and gave the content team zero
+ * buffer past the calendar date. Pure functions only; no Supabase, no env,
+ * so they are unit-testable with fixed dates.
  */
 
 const IST_OFFSET_MINUTES = 330; // UTC+05:30, constant - IST has no DST
+const UNLOCK_HOUR_IST = 4; // days roll over at 04:00 IST, not midnight
+/**
+ * Effective offset for day-boundary math: shifting the IST offset back by the
+ * unlock hour makes the "IST day" start at 04:00 IST, so all epoch-day
+ * arithmetic below inherits the 4am boundary with no special-casing.
+ */
+const BOUNDARY_OFFSET_MINUTES = IST_OFFSET_MINUTES - UNLOCK_HOUR_IST * 60;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /**
@@ -38,10 +48,11 @@ function testAnchorMs(): number {
 }
 
 /**
- * The IST calendar date containing `now`, as days since the Unix epoch.
+ * The IST "unlock day" containing `now`, as days since the Unix epoch. Uses
+ * the boundary offset, so the day increments at 04:00 IST rather than 00:00.
  */
 function istEpochDay(now: Date): number {
-  return Math.floor((now.getTime() + IST_OFFSET_MINUTES * 60 * 1000) / MS_PER_DAY);
+  return Math.floor((now.getTime() + BOUNDARY_OFFSET_MINUTES * 60 * 1000) / MS_PER_DAY);
 }
 
 /**
@@ -82,7 +93,7 @@ export function isUnlocked(
 }
 
 /**
- * The UTC instant at which a given day offset unlocks (midnight IST of that
+ * The UTC instant at which a given day offset unlocks (04:00 IST of that
  * day) - used by the UI to show "unlocks on …" for locked days.
  */
 export function unlockDate(unlockDayOffset: number, batchStartsOn: string): Date {
@@ -91,5 +102,5 @@ export function unlockDate(unlockDayOffset: number, batchStartsOn: string): Date
     return new Date(testAnchorMs() + unlockDayOffset * intervalMs);
   }
   const epochDay = startEpochDay(batchStartsOn) + unlockDayOffset;
-  return new Date(epochDay * MS_PER_DAY - IST_OFFSET_MINUTES * 60 * 1000);
+  return new Date(epochDay * MS_PER_DAY - BOUNDARY_OFFSET_MINUTES * 60 * 1000);
 }

@@ -37,14 +37,17 @@ export default async function AdminProgress() {
   return (
     <div className="space-y-5">
       <div className="flex items-baseline justify-between">
-        <h1 className="font-display text-h3 font-bold tracking-display text-fg">Cohort progress</h1>
+        <div>
+          <p className="eyebrow text-emerald">Learners</p>
+          <h1 className="mt-1 text-h2 text-fg">Cohort progress</h1>
+        </div>
         <p className="text-small text-fg-2">
           {rows.length} active learners · cohort average{" "}
           <span className="font-bold text-emerald">{cohortPercent}%</span>
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-card bg-white shadow-card">
+      <div className="overflow-x-auto rounded-md border border-border bg-white shadow-card">
         <table className="w-full text-left text-small">
           <thead>
             <tr className="border-b border-border text-label uppercase tracking-wide text-fg-3">

@@ -49,36 +49,65 @@ export function ResourceForm({
     }
   }
 
+  const field = "block text-label font-bold text-fg-2";
+  const control = `${inputClass} mt-1 w-full`;
+
   return (
-    <form onSubmit={onSubmit} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <input name="title" placeholder="Title" required className={inputClass} />
-      <input name="description" placeholder="Description (optional)" className={inputClass} />
-      <input name="url" type="url" placeholder="https://…" required className={inputClass} />
-      <select name="kind" className={inputClass} defaultValue="link">
-        {["link", "file", "template", "video", "doc"].map((k) => (
-          <option key={k} value={k}>{k}</option>
-        ))}
-      </select>
-      <select name="module_id" className={inputClass} defaultValue="">
-        <option value="">No Area (General)</option>
-        {modules.map((m) => (
-          <option key={m.id} value={m.id}>{m.label}</option>
-        ))}
-      </select>
-      <select name="lesson_id" className={inputClass} defaultValue="">
-        <option value="">No lesson</option>
-        {lessons.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.label}</option>)}
-      </select>
-      <select name="batch_id" className={inputClass} defaultValue="">
-        <option value="">All batches</option>
-        {batches.map((b) => (
-          <option key={b.id} value={b.id}>Only: {b.label}</option>
-        ))}
-      </select>
-      <button type="submit" disabled={busy} className={buttonClass}>
-        {busy ? "Adding…" : "Add resource"}
-      </button>
-      {error && <p className="text-label text-destructive sm:col-span-2">{error}</p>}
-    </form>
+    <details className="rounded-md border border-border bg-bg p-3">
+      <summary className="cursor-pointer text-small font-bold text-emerald">+ Add a resource</summary>
+      <form onSubmit={onSubmit} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label className={field}>
+          Title
+          <input name="title" placeholder="Day 3 workbook (PDF)" required className={control} />
+        </label>
+        <label className={field}>
+          Description (optional)
+          <input name="description" placeholder="Shown under the title" className={control} />
+        </label>
+        <label className={field}>
+          Link (PDF or page URL)
+          <input name="url" type="url" placeholder="https://…" required className={control} />
+        </label>
+        <label className={field}>
+          Kind
+          <select name="kind" className={control} defaultValue="doc">
+            {["doc", "link", "file", "template", "video"].map((k) => (
+              <option key={k} value={k}>{k}</option>
+            ))}
+          </select>
+        </label>
+        <label className={field}>
+          Day it belongs to (shows under that day&apos;s Materials)
+          <select name="lesson_id" className={control} defaultValue="">
+            <option value="">No specific day - vault only</option>
+            {lessons.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.label}</option>)}
+          </select>
+        </label>
+        <label className={field}>
+          Learning area (groups it in the vault)
+          <select name="module_id" className={control} defaultValue="">
+            <option value="">No Area (General)</option>
+            {modules.map((m) => (
+              <option key={m.id} value={m.id}>{m.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className={field}>
+          Visibility
+          <select name="batch_id" className={control} defaultValue="">
+            <option value="">All batches</option>
+            {batches.map((b) => (
+              <option key={b.id} value={b.id}>Only: {b.label}</option>
+            ))}
+          </select>
+        </label>
+        <div className="flex items-end">
+          <button type="submit" disabled={busy} className={buttonClass}>
+            {busy ? "Adding…" : "Add resource"}
+          </button>
+        </div>
+        {error && <p className="text-label text-destructive sm:col-span-2">{error}</p>}
+      </form>
+    </details>
   );
 }

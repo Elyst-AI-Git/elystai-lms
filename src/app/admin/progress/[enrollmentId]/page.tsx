@@ -55,7 +55,7 @@ export default async function LearnerDrilldown({
     <div className="space-y-4">
       <div>
         <Link href="/admin/progress" className="text-label text-fg-3 hover:text-emerald">← Cohort</Link>
-        <h1 className="mt-1 font-display text-h3 font-bold tracking-display text-fg">
+        <h1 className="mt-1 text-h2 text-fg">
           {profile?.full_name ?? profile?.email}
         </h1>
         <p className="text-label text-fg-3">{profile?.email} · {batch.name}</p>

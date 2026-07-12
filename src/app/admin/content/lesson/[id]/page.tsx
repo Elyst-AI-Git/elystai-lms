@@ -32,7 +32,7 @@ export default async function AdminLessonPage({
         >
           ← {moduleRow.title}
         </Link>
-        <h1 className="mt-1 font-display text-h3 font-bold tracking-display text-fg">Edit lesson</h1>
+        <h1 className="mt-1 text-h2 text-fg">Edit lesson</h1>
       </div>
       <LessonEditor lesson={lesson} />
     </div>

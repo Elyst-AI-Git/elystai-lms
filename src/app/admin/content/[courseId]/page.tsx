@@ -36,7 +36,7 @@ export default async function CourseTree({
     <div className="space-y-5">
       <div>
         <Link href="/admin/content" className="text-label text-fg-3 hover:text-emerald">← Courses</Link>
-        <h1 className="mt-1 font-display text-h3 font-bold tracking-display text-fg">{course.title}</h1>
+        <h1 className="mt-1 text-h2 text-fg">{course.title}</h1>
         <p className="text-label text-fg-3">/{course.slug} · {course.status}</p>
       </div>
 
@@ -44,7 +44,7 @@ export default async function CourseTree({
         const lessons = [...(m.lessons ?? [])].sort((a, b) => a.position - b.position);
         const lessonSiblings: [string, number][] = lessons.map((l, i) => [l.id, i]);
         return (
-          <section key={m.id} className="rounded-card bg-white p-4 shadow-card">
+          <section key={m.id} className="rounded-md border border-border bg-white p-4 shadow-card">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h2 className="font-semibold text-fg">{m.title}</h2>
               <RowActions
@@ -86,7 +86,7 @@ export default async function CourseTree({
         );
       })}
 
-      <div className="rounded-card bg-surface-muted p-4">
+      <div className="rounded-md bg-surface-muted p-4">
         <p className="mb-2 text-small font-semibold text-fg-2">New module (Area)</p>
         <InlineCreate
           endpoint="/api/admin/content/modules"

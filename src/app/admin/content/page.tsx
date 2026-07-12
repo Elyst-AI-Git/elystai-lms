@@ -14,13 +14,17 @@ export default async function AdminContent() {
 
   return (
     <div className="space-y-5">
-      <h1 className="font-display text-h3 font-bold tracking-display text-fg">Content</h1>
+      <div>
+        <p className="eyebrow text-emerald">Courses &amp; days</p>
+        <h1 className="mt-1 text-h2 text-fg">Content</h1>
+        <p className="mt-1 text-label text-fg-3">Open a course to edit its days - titles, YouTube videos, and body text.</p>
+      </div>
       <div className="space-y-2">
         {(courses ?? []).map((c) => (
           <Link
             key={c.id}
             href={`/admin/content/${c.id}`}
-            className="flex items-center justify-between rounded-card bg-white p-4 shadow-card hover:shadow-card-hover"
+            className="flex items-center justify-between rounded-md border border-border bg-white p-4 shadow-card hover:shadow-card-hover"
           >
             <div>
               <p className="font-semibold text-fg">{c.title}</p>
@@ -32,7 +36,7 @@ export default async function AdminContent() {
           </Link>
         ))}
       </div>
-      <div className="rounded-card bg-surface-muted p-4">
+      <div className="rounded-md bg-surface-muted p-4">
         <p className="mb-2 text-small font-semibold text-fg-2">New course</p>
         <InlineCreate
           endpoint="/api/admin/content/courses"

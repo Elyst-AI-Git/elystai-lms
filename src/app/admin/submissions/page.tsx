@@ -66,13 +66,13 @@ export default async function AdminSubmissions({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-display text-h3 font-bold tracking-display text-fg">Submissions</h1>
+        <h1 className="text-h2 text-fg">Submissions</h1>
         <div className="flex gap-2 text-label">
           {STATUSES.map((s) => (
             <Link
               key={s}
               href={s === "all" ? "/admin/submissions" : `/admin/submissions?status=${s}`}
-              className={`rounded-pill px-3 py-1 font-semibold ${
+              className={`rounded-md px-3 py-1 font-semibold ${
                 filter === s ? "bg-emerald text-fg-on-dark" : "bg-surface-muted text-fg-2"
               }`}
             >
@@ -88,7 +88,7 @@ export default async function AdminSubmissions({
           const profile = enrollment ? profileById.get(enrollment.profile_id) : null;
           const lesson = Array.isArray(s.lessons) ? s.lessons[0] : s.lessons;
           return (
-            <article key={s.id} className="space-y-3 rounded-card bg-white p-4 shadow-card">
+            <article key={s.id} className="space-y-3 rounded-md border border-border bg-white p-4 shadow-card">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-semibold text-fg">{profile?.full_name ?? profile?.email}</p>
@@ -96,7 +96,7 @@ export default async function AdminSubmissions({
                     {lesson?.title} · {IST_DATETIME.format(new Date(s.created_at))} IST
                   </p>
                 </div>
-                <span className={`rounded-pill px-2.5 py-1 text-micro font-semibold uppercase tracking-wide ${STATUS_BADGE[s.status]}`}>
+                <span className={`rounded-md px-2.5 py-1 text-micro font-semibold uppercase tracking-wide ${STATUS_BADGE[s.status]}`}>
                   {s.status.replace("_", " ")}
                 </span>
               </div>

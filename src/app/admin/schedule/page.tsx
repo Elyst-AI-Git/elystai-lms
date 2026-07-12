@@ -14,7 +14,8 @@ export default async function AdminSchedule() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-display text-h3 font-bold tracking-display text-fg">Schedule</h1>
+        <p className="eyebrow text-emerald">Cohort dates</p>
+        <h1 className="mt-1 text-h2 text-fg">Schedule</h1>
         <p className="mt-1 text-label text-fg-3">Set each cohort&apos;s launch date. This drives every lesson-unlock &mdash; change it and the whole 14-day drip shifts.</p>
       </div>
       <div className="space-y-3">
@@ -30,7 +31,7 @@ export default async function AdminSchedule() {
           );
         })}
         {(batches ?? []).length === 0 && (
-          <p className="rounded-card bg-surface-muted p-4 text-small text-fg-3">No batches yet.</p>
+          <p className="rounded-md bg-surface-muted p-4 text-small text-fg-3">No batches yet.</p>
         )}
       </div>
     </div>

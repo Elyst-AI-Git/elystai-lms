@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { adminFetch, buttonClass, inputClass } from "@/components/admin/crud";
 
 /**
- * Edits a batch's launch date. `starts_on` (IST midnight of that date) is the
+ * Edits a batch's launch date. `starts_on` (04:00 IST of that date) is the
  * anchor for every drip unlock, so changing it here shifts the whole cohort's
  * schedule. Day 1 = starts_on, Day 14 = starts_on + 13.
  */
@@ -37,10 +37,10 @@ export function ScheduleEditor({
   }
 
   return (
-    <form onSubmit={save} className="flex flex-wrap items-end gap-3 rounded-card bg-white p-4 shadow-card">
+    <form onSubmit={save} className="flex flex-wrap items-end gap-3 rounded-md border border-border bg-white p-4 shadow-card">
       <div className="min-w-0 flex-1">
         <p className="font-semibold text-fg">{name}</p>
-        <p className="text-label text-fg-3">Day 1 unlocks on this date (00:00 IST); each later day unlocks the next midnight.</p>
+        <p className="text-label text-fg-3">Day 1 unlocks on this date at 4:00 AM IST; each later day unlocks at 4:00 AM the next morning.</p>
       </div>
       <label className="text-small font-medium text-fg-2">
         Starts on
