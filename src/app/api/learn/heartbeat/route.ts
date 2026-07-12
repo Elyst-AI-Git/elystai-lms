@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getEnrollmentForLesson } from "@/lib/lms/auth";
+import { isUnlocked } from "@/lib/lms/drip";
 import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
 
@@ -26,6 +27,12 @@ export async function POST(req: NextRequest) {
 
   const ctx = await getEnrollmentForLesson(lessonId);
   if (!ctx) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  // Drip boundary parity with the progress route: a locked lesson is not
+  // interactable, so it must not accept telemetry either.
+  if (!ctx.lesson.is_preview && !isUnlocked(ctx.lesson.unlock_day_offset, ctx.batchStartsOn, new Date())) {
+    return NextResponse.json({ error: "Lesson is locked" }, { status: 403 });
+  }
 
   await logEvent({
     event: LMS_EVENTS.learner.video.heartbeat,
