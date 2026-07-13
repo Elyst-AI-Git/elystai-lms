@@ -14,3 +14,6 @@ playwright-report/
 test-results/
 tests/e2e/.auth/
 tests/e2e/report.json
+
+# local-only working docs (checklists, handoffs, plans) — never committed
+docs-local/

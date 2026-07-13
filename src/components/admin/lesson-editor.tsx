@@ -11,7 +11,6 @@ interface LessonData {
   content_type: string;
   unlock_day_offset: number;
   is_preview: boolean;
-  bunny_video_id: string | null;
   youtube_id: string | null;
   duration_seconds: number | null;
   body_richtext: string | null;
@@ -58,7 +57,6 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
     content_type: lesson.content_type,
     unlock_day_offset: lesson.unlock_day_offset,
     is_preview: lesson.is_preview,
-    bunny_video_id: lesson.bunny_video_id ?? "",
     youtube_id: lesson.youtube_id ?? "",
     duration_seconds: lesson.duration_seconds?.toString() ?? "",
     body_richtext: lesson.body_richtext ?? "",
@@ -84,7 +82,6 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
       content_type: form.content_type,
       unlock_day_offset: Number(form.unlock_day_offset) || 0,
       is_preview: form.is_preview,
-      bunny_video_id: form.bunny_video_id,
       youtube_id: extractYoutubeId(form.youtube_id),
       duration_seconds: form.duration_seconds ? Number(form.duration_seconds) : "",
       body_richtext: form.body_richtext,
@@ -209,15 +206,6 @@ export function LessonEditor({ lesson }: { lesson: LessonData }) {
           </label>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <label className={label}>
-              Bunny video ID (legacy)
-              <input
-                value={form.bunny_video_id}
-                onChange={(e) => set("bunny_video_id", e.target.value)}
-                className={wide}
-                placeholder="only if not on YouTube"
-              />
-            </label>
             <label className={label}>
               Live class link (legacy)
               <input

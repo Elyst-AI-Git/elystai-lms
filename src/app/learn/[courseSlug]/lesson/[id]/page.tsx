@@ -28,7 +28,7 @@ export default async function LessonView({
     .schema("app")
     .from("lessons")
     .select(
-      "id, title, content_type, unlock_day_offset, position, is_preview, bunny_video_id, youtube_id, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id)"
+      "id, title, content_type, unlock_day_offset, position, is_preview, youtube_id, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id)"
     )
     .eq("modules.course_id", course.id)
     .order("unlock_day_offset", { ascending: true })
@@ -70,13 +70,7 @@ export default async function LessonView({
   });
 
   const videoEmbed =
-    lesson.content_type === "video"
-      ? resolveVideoEmbed({
-          youtubeId: lesson.youtube_id,
-          bunnyVideoId: lesson.bunny_video_id,
-          bunnyLibraryId: process.env.BUNNY_STREAM_LIBRARY_ID,
-        })
-      : null;
+    lesson.content_type === "video" ? resolveVideoEmbed({ youtubeId: lesson.youtube_id }) : null;
 
   const dayHref = `/learn/${course.slug}/day/${lesson.unlock_day_offset}`;
 

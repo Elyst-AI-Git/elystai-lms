@@ -86,7 +86,8 @@ test.describe("admin console", () => {
     await expect(page.getByLabel(/Duration \(seconds\)/)).toBeVisible();
     await expect(page.getByLabel(/Free preview/)).toBeVisible();
     await expect(page.getByLabel(/Task instructions/)).toBeVisible();
-    await expect(page.getByLabel(/Bunny video ID/)).toBeVisible();
+    // Bunny is fully removed from the app - the field must NOT exist anymore.
+    await expect(page.getByLabel(/Bunny video ID/)).toHaveCount(0);
     await expect(page.getByLabel(/Live class link/)).toBeVisible();
     await expect(page.getByLabel(/Live class time/)).toBeVisible();
   });

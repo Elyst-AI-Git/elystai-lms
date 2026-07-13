@@ -27,7 +27,7 @@ jobs:
       - name: Unit suites (pure logic, no network)
         run: |
           for f in scripts/test-drip.ts scripts/test-access.ts scripts/test-plan.ts \
-                   scripts/test-storage.ts scripts/test-events.ts scripts/test-video.ts \
+                   scripts/test-events.ts scripts/test-video.ts \
                    scripts/test-admin-utils.ts; do
             [ -f "$f" ] && echo "== $f ==" && npx tsx "$f" || true
           done

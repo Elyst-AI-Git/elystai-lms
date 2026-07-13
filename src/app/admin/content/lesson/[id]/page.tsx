@@ -16,7 +16,7 @@ export default async function AdminLessonPage({
     .schema("app")
     .from("lessons")
     .select(
-      "id, title, content_type, unlock_day_offset, is_preview, bunny_video_id, youtube_id, duration_seconds, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id, title)"
+      "id, title, content_type, unlock_day_offset, is_preview, youtube_id, duration_seconds, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id, title)"
     )
     .eq("id", id)
     .maybeSingle();

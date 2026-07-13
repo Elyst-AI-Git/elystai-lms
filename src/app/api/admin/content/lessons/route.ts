@@ -9,7 +9,6 @@ export const { POST, PATCH, DELETE } = makeAdminCrudHandlers({
     "content_type",
     "unlock_day_offset",
     "is_preview",
-    "bunny_video_id",
     "youtube_id",
     "duration_seconds",
     "body_richtext",
