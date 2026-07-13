@@ -53,7 +53,7 @@ export function SignOutButton({
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-h3 text-fg" id="signout-confirm-title">Sign out?</p>
-            <p className="mt-1 text-small text-fg-2">You&apos;ll need to sign in again to get back to your learning plan.</p>
+            <p className="mt-1 text-small text-fg-2">You will need to sign in again to access the hub.</p>
             <div className="mt-5 flex gap-3">
               <button
                 className="pressable min-h-11 flex-1 rounded-md border border-border px-4 text-small font-bold text-fg-2 transition-colors hover:border-emerald hover:text-emerald"
@@ -72,7 +72,7 @@ export function SignOutButton({
                 }}
                 type="button"
               >
-                {busy ? "Signing out…" : "Sign out"}
+                {busy ? "Signing out…" : "Confirm"}
               </button>
             </div>
           </div>
