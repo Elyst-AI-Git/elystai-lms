@@ -31,6 +31,11 @@ export function LearningPlanCanvas({
   const completed = new Set(completedLessonIds);
   const nextLesson = selectNextLesson(lessons.filter((lesson) => lesson.isUnlocked), completedLessonIds);
   const queuedLessons = nextLesson ? selectQueuedLessons(lessons, nextLesson.id, 2) : [];
+  // No lessons exist for the course yet (content not published) is a distinct
+  // case from "caught up on everything currently unlocked" - same nextLesson
+  // === undefined, but the copy must not tell a learner they finished
+  // something that was never there.
+  const hasAnyLessons = lessons.length > 0;
   const { headline } = planHeadline(nextLesson, today);
 
   return (
@@ -38,7 +43,7 @@ export function LearningPlanCanvas({
       <div className="min-w-0">
         <div>
           <p className="eyebrow text-emerald">Your learning plan</p>
-          <h2 id="learning-plan-heading" className="mt-1 text-h3 text-fg">{headline}</h2>
+          <h2 id="learning-plan-heading" className="mt-1 text-h3 text-fg">{hasAnyLessons ? headline : "Getting your course ready."}</h2>
         </div>
       </div>
 
@@ -74,8 +79,12 @@ export function LearningPlanCanvas({
         <div className="mt-5 flex items-start gap-3 rounded-md bg-green/10 p-4">
           <CircleCheckBig className="mt-0.5 h-5 w-5 shrink-0 text-emerald" aria-hidden />
           <div>
-            <p className="text-small font-bold text-fg">You&apos;re caught up.</p>
-            <p className="mt-1 text-label text-fg-2">Your next unlocked lesson will be added to this plan automatically.</p>
+            <p className="text-small font-bold text-fg">{hasAnyLessons ? "You're caught up." : "We're finishing the course setup."}</p>
+            <p className="mt-1 text-label text-fg-2">
+              {hasAnyLessons
+                ? "Your next unlocked lesson will be added to this plan automatically."
+                : "Day 1 will appear here as soon as it's published - check back soon."}
+            </p>
           </div>
         </div>
       )}
