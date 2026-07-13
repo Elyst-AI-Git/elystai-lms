@@ -26,7 +26,7 @@ function StatStrip({
   // giving the alternating strip pattern the dashboard asks for.
   return (
     <div
-      className={`flex items-center justify-between gap-3 rounded-md border border-border px-4 py-3 ${tone} ${
+      className={`flex min-h-[4.5rem] items-center justify-between gap-3 rounded-md border border-border px-4 py-3 ${tone} ${
         reverseOnMobile ? "flex-row-reverse sm:flex-row" : ""
       }`}
     >

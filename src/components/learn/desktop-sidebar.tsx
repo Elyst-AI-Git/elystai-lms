@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { BookOpen, FolderOpen, LogOut } from "lucide-react";
+import { BookOpen, FolderOpen } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SignOutButton } from "@/components/learn/sign-out-button";
 
 const LINKS = [
   { href: "/learn", label: "Learning plan", icon: BookOpen },
@@ -43,12 +44,11 @@ export function DesktopSidebar({ email, name }: { email: string; name: string | 
           <p className="lms-label font-bold text-fg-on-dark">{name ?? "AI for Work learner"}</p>
           <p className="mt-1 truncate lms-meta text-fg-muted-dark">{email}</p>
         </div>
-        <form action="/api/auth/signout" className="mt-3" method="post">
-        <button className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 lms-label font-bold text-fg-muted-dark transition-colors hover:bg-white/10 hover:text-fg-on-dark" type="submit">
-          <LogOut className="h-4 w-4" aria-hidden />
-          Sign out
-        </button>
-        </form>
+        <div className="mt-3">
+          <SignOutButton triggerClassName="flex min-h-11 w-full items-center gap-3 rounded-md px-3 lms-label font-bold text-fg-muted-dark transition-colors hover:bg-white/10 hover:text-fg-on-dark">
+            Sign out
+          </SignOutButton>
+        </div>
       </div>
     </aside>
   );

@@ -1,8 +1,9 @@
 "use client";
 
-import { FolderOpen, GraduationCap, LogOut } from "lucide-react";
+import { FolderOpen, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SignOutButton } from "@/components/learn/sign-out-button";
 
 const ITEMS = [
   { href: "/learn", label: "Course", icon: GraduationCap },
@@ -41,12 +42,9 @@ export function BottomNav() {
             </Link>
           );
         })}
-        <form action="/api/auth/signout" method="post">
-          <button className="pressable flex min-h-[44px] items-center gap-1.5 rounded-md px-3 text-label font-semibold text-fg-muted-dark transition-colors hover:text-white sm:gap-2 sm:px-5 sm:text-small" type="submit">
-            <LogOut className="h-4 w-4" strokeWidth={2} aria-hidden />
-            Sign out
-          </button>
-        </form>
+        <SignOutButton triggerClassName="pressable flex min-h-[44px] items-center gap-1.5 rounded-md px-3 text-label font-semibold text-fg-muted-dark transition-colors hover:text-white sm:gap-2 sm:px-5 sm:text-small">
+          Sign out
+        </SignOutButton>
       </div>
     </nav>
   );
