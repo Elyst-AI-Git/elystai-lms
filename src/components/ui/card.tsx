@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * Card — trimmed to the one variant the brand actually uses: "gradient".
- * (The original community component shipped seven variants — dots, plus,
- * neubrutalism, inner, lifted, corners, default — none of which fit the
+ * Card - trimmed to the one variant the brand actually uses: "gradient".
+ * (The original community component shipped seven variants - dots, plus,
+ * neubrutalism, inner, lifted, corners, default - none of which fit the
  * brand's light/emerald system, so the rest were removed rather than carried
  * as dead weight.)
  *
  * The gradient frame: faint emerald→green hairlines trace the card's edges
- * and fade at the corners — an architectural, "blueprint" feel that reads as
+ * and fade at the corners - an architectural, "blueprint" feel that reads as
  * premium without resorting to heavy borders or shadows. Padding/background/
  * radius stay fully in the consumer's hands (via className/style) so this
  * frame can drop onto any existing card shape.

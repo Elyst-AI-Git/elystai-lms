@@ -1,9 +1,9 @@
 /**
- * Section mark — the small label that introduces each section across the site.
+ * Section mark - the small label that introduces each section across the site.
  *
  * Replaces the generic rounded "pill chip" pattern (a coloured badge above a
  * headline) that reads as templated/AI-generated. This is a symmetric
- * rule–label–rule mark instead — closer to a technical drawing's callout than
+ * rule–label–rule mark instead - closer to a technical drawing's callout than
  * a marketing badge, which fits the brand's engineered/blueprint register.
  *
  * Used on every page (Home, AIOS, Learn, Circle) so the eyebrow treatment is

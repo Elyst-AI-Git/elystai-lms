@@ -1,7 +1,7 @@
-export default function Home() {
-  return (
-    <main id="main" className="flex flex-1 items-center justify-center p-8">
-      <p className="text-fg-muted">Elyst AI Learning Portal</p>
-    </main>
-  );
+import { redirect } from "next/navigation";
+import { getUserOrNull } from "@/lib/lms/auth";
+
+export default async function Home() {
+  const user = await getUserOrNull();
+  redirect(user ? "/learn" : "/login");
 }

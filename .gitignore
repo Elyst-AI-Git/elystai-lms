@@ -7,3 +7,13 @@ node_modules/
 
 # local agent-skills mirror for Codex (installed as Claude plugin separately)
 .agents/
+
+# test/load harness artifacts
+artifacts/
+playwright-report/
+test-results/
+tests/e2e/.auth/
+tests/e2e/report.json
+
+# local-only working docs (checklists, handoffs, plans) — never committed
+docs-local/

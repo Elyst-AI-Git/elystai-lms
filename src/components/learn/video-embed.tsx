@@ -5,7 +5,7 @@ import * as React from "react";
 const HEARTBEAT_INTERVAL_MS = 30_000;
 
 /**
- * Bunny Stream iframe embed (plan: no custom player — best mobile-Safari
+ * YouTube (nocookie) iframe embed (plan: no custom player - best mobile-Safari
  * compatibility) + the 30s telemetry heartbeat (spec D3: logged for future
  * AI use, never drives completion). Position is approximated by time on
  * page since the iframe API doesn't expose playhead cross-origin; paused

@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * `metal-fx` around `Button` — liquid metal ring for controls.
+ * `metal-fx` around `Button` - liquid metal ring for controls.
  * `className` styles the button; `metalFxClassName` styles the MetalFx wrapper.
  *
  * With `normalizeHostStyles` (default), variant fills live on the MetalFx wrapper

@@ -16,7 +16,7 @@ export default async function AdminLessonPage({
     .schema("app")
     .from("lessons")
     .select(
-      "id, title, content_type, unlock_day_offset, is_preview, bunny_video_id, duration_seconds, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id, title)"
+      "id, title, content_type, unlock_day_offset, is_preview, youtube_id, duration_seconds, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id, title)"
     )
     .eq("id", id)
     .maybeSingle();
@@ -32,7 +32,7 @@ export default async function AdminLessonPage({
         >
           ← {moduleRow.title}
         </Link>
-        <h1 className="mt-1 font-display text-h3 font-bold tracking-display text-fg">Edit lesson</h1>
+        <h1 className="mt-1 text-h2 text-fg">Edit lesson</h1>
       </div>
       <LessonEditor lesson={lesson} />
     </div>

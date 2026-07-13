@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useIsTouch } from "@/lib/use-touch";
 
 /**
- * CtaBanner — a self-contained, horizontal call-to-action card: a bright
+ * CtaBanner - a self-contained, horizontal call-to-action card: a bright
  * brand-green panel with a headline + supporting line on the left and the
  * action(s) on the right, over a soft wave texture. Shared across the AIOS,
  * Accelerator and AI-for-Work closes so every arm of the site ends on the
@@ -23,15 +23,15 @@ type CtaBannerProps = {
   actions: React.ReactNode;
   sharp?: boolean;
   /** "light" = bright-green panel, dark text (default). "dark" = deep
-   *  dark-green panel, light text — used on the AIOS close. */
+   *  dark-green panel, light text - used on the AIOS close. */
   tone?: CtaTone;
   /** Override the corner radius (defaults to --radius-card). Pass the navbar's
    *  pill radius (--radius) to match a page that wants a tighter curve. */
   radius?: string;
   /** Adds the same subtle ring used on the homepage's Learn AI program cards
-   *  (ring-1 ring-black/25) — an outline rather than relying on the glow alone. */
+   *  (ring-1 ring-black/25) - an outline rather than relying on the glow alone. */
   bordered?: boolean;
-  /** Gives the heading column more width (max-w-2xl vs max-w-xl) — used when the
+  /** Gives the heading column more width (max-w-2xl vs max-w-xl) - used when the
    *  action slot is a narrow stacked column. */
   wide?: boolean;
   /** Stacks the action buttons vertically, centered on a shared axis, instead
@@ -42,7 +42,7 @@ type CtaBannerProps = {
 };
 
 function WaveTexture({ tone }: { tone: CtaTone }) {
-  // Two translucent waves drifting across the panel — the same organic "flow"
+  // Two translucent waves drifting across the panel - the same organic "flow"
   // motif as the reference, kept very low-contrast so the copy always wins.
   // On the dark panel the ink waves vanish, so switch to light washes.
   const fill1 = tone === "dark" ? "rgba(255,255,255,0.05)" : "rgba(3,98,76,0.10)";

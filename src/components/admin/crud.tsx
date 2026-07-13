@@ -25,11 +25,11 @@ export async function adminFetch(
 }
 
 export const inputClass =
-  "rounded-md border border-border bg-white px-2.5 py-1.5 text-small text-fg outline-none focus:border-emerald";
+  "min-h-11 rounded-md border border-border bg-white px-3 py-2 text-small text-fg outline-none transition focus:border-emerald focus:ring-2 focus:ring-emerald/20";
 export const buttonClass =
-  "rounded-md bg-emerald px-3 py-1.5 text-small font-semibold text-fg-on-dark hover:bg-emerald-light disabled:opacity-50";
+  "pressable min-h-11 rounded-md bg-emerald px-4 py-2 text-small font-bold text-fg-on-dark transition-colors hover:bg-emerald-light disabled:opacity-50";
 export const subtleButtonClass =
-  "rounded-md border border-border bg-white px-2 py-1 text-label text-fg-2 hover:border-emerald hover:text-emerald disabled:opacity-40";
+  "pressable min-h-9 rounded-md border border-border bg-white px-2.5 py-1 text-label font-semibold text-fg-2 transition hover:border-emerald hover:text-emerald disabled:opacity-40";
 
 /** One-field inline create form (module titles, etc.). */
 export function InlineCreate({

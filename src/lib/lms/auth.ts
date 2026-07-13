@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
+import { resolveAccess, type EnrollmentLike } from "@/lib/lms/access";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * Per-request auth gates (spec D5): no middleware.ts — every /learn and
+ * Per-request auth gates (spec D5): no middleware.ts - every /learn and
  * /admin entry point calls one of these. They are convenience + UX; RLS
  * remains the real security boundary. Auth/enrollment state is never cached.
  */
@@ -28,33 +29,37 @@ export interface EnrollmentContext {
   };
 }
 
-/** Redirects to /register when there is no authenticated user. */
+/** Redirects to /login when there is no authenticated user. */
 export async function requireUser(): Promise<User> {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/register");
+  if (!user) redirect("/login");
   return user;
 }
 
 /**
  * Returns the user's ACTIVE enrollment (+ batch + course) for the course, or
- * redirects to the course landing page. If several active enrollments exist
+ * redirects to the no-access page. If several active enrollments exist
  * (spec A2 edge case), picks the most recent.
  */
 export async function requireEnrollment(
   courseSlug: string
 ): Promise<EnrollmentContext> {
-  const user = await requireUser();
   const supabase = await createServerSupabaseClient();
-
-  const { data: course } = await supabase
-    .schema("app")
-    .from("courses")
-    .select("id, slug, title")
-    .eq("slug", courseSlug)
-    .single();
+  const [userResult, courseResult] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .schema("app")
+      .from("courses")
+      .select("id, slug, title")
+      .eq("slug", courseSlug)
+      .single(),
+  ]);
+  const user = userResult.data.user;
+  if (!user) redirect("/login");
+  const course = courseResult.data;
   if (!course) notFound();
 
   const { data: enrollments } = await supabase
@@ -62,13 +67,22 @@ export async function requireEnrollment(
     .from("enrollments")
     .select("id, batch_id, status, created_at, batches!inner(id, course_id, name, starts_on)")
     .eq("profile_id", user.id)
-    .eq("status", "active")
-    .eq("batches.course_id", course.id)
-    .order("created_at", { ascending: false })
-    .limit(1);
+    .order("created_at", { ascending: false });
 
-  const enrollment = enrollments?.[0];
-  if (!enrollment) redirect(`/${courseSlug}`);
+  const accessEnrollments: EnrollmentLike[] = (enrollments ?? []).flatMap((entry) => {
+    const batch = Array.isArray(entry.batches) ? entry.batches[0] : entry.batches;
+    return batch ? [{ status: entry.status, batch: { course_id: batch.course_id } }] : [];
+  });
+
+  if (resolveAccess(true, accessEnrollments, course.id) !== "ok") {
+    redirect("/no-access");
+  }
+
+  const enrollment = (enrollments ?? []).find((entry) => {
+    const batch = Array.isArray(entry.batches) ? entry.batches[0] : entry.batches;
+    return entry.status === "active" && batch?.course_id === course.id;
+  });
+  if (!enrollment) redirect("/no-access");
 
   const batch = Array.isArray(enrollment.batches)
     ? enrollment.batches[0]
@@ -100,7 +114,7 @@ export async function getUserOrNull(): Promise<User | null> {
 
 /**
  * Resolves the caller's ACTIVE enrollment for the course a lesson belongs
- * to — the ownership chain every learner mutation route needs. Null when the
+ * to - the ownership chain every learner mutation route needs. Null when the
  * lesson doesn't exist (or is invisible to the caller via RLS) or the caller
  * has no active enrollment.
  */
@@ -167,7 +181,7 @@ export async function isAdmin(): Promise<User | null> {
 
 /**
  * Admin gate (spec D8): membership in public.admin_users. Non-admins get a
- * 404, not a login hint — the admin surface should not advertise itself.
+ * 404, not a login hint - the admin surface should not advertise itself.
  */
 export async function requireAdmin(): Promise<User> {
   const supabase = await createServerSupabaseClient();

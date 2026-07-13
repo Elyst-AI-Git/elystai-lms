@@ -83,7 +83,7 @@ function BentoGrid({ items = itemsSample }: BentoGridProps) {
                             }
                         )}
                     >
-                        {/* Dotted radial overlay — brighter on black cards */}
+                        {/* Dotted radial overlay - brighter on black cards */}
                         <div
                             className={`absolute inset-0 ${
                                 item.hasPersistentHover

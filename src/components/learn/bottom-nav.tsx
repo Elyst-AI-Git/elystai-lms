@@ -1,6 +1,6 @@
 "use client";
 
-import { GraduationCap, FolderOpen } from "lucide-react";
+import { FolderOpen, GraduationCap, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,20 +10,17 @@ const ITEMS = [
 ];
 
 /**
- * Floating pill bottom nav — app-idiom navigation instead of a website-style
+ * Floating pill bottom nav - app-idiom navigation instead of a website-style
  * top link bar. Icons + labels, active state, safe-area aware.
  */
 export function BottomNav() {
   const pathname = usePathname();
-  // Lesson pages are focus mode: the sticky completion bar owns the bottom
-  // edge there, so the nav steps aside instead of stacking on top of it.
-  if (pathname.includes("/lesson/")) return null;
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)]"
+      className="fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="Primary"
     >
-      <div className="flex items-center gap-1 rounded-pill border border-border bg-white/90 p-1.5 shadow-card-hover backdrop-blur">
+      <div className="flex items-center gap-1 rounded-md bg-emerald p-1.5 shadow-card-hover">
         {ITEMS.map((item) => {
           const active =
             item.href === "/learn"
@@ -35,8 +32,8 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`pressable flex min-h-[44px] items-center gap-2 rounded-pill px-5 text-small font-semibold transition-colors ${
-                active ? "bg-emerald text-fg-on-dark" : "text-fg-2 hover:text-emerald"
+              className={`pressable flex min-h-[44px] items-center gap-1.5 rounded-md px-3 text-label font-semibold transition-colors sm:gap-2 sm:px-5 sm:text-small ${
+                active ? "bg-white text-emerald" : "text-fg-muted-dark hover:text-white"
               }`}
             >
               <Icon className="h-4 w-4" strokeWidth={2} aria-hidden />
@@ -44,6 +41,12 @@ export function BottomNav() {
             </Link>
           );
         })}
+        <form action="/api/auth/signout" method="post">
+          <button className="pressable flex min-h-[44px] items-center gap-1.5 rounded-md px-3 text-label font-semibold text-fg-muted-dark transition-colors hover:text-white sm:gap-2 sm:px-5 sm:text-small" type="submit">
+            <LogOut className="h-4 w-4" strokeWidth={2} aria-hidden />
+            Sign out
+          </button>
+        </form>
       </div>
     </nav>
   );

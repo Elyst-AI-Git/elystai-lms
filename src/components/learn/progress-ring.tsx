@@ -1,5 +1,5 @@
 /**
- * SVG progress ring — server-renderable, animates its stroke once on mount
+ * SVG progress ring - server-renderable, animates its stroke once on mount
  * via the .ring-progress CSS animation (no JS).
  */
 export function ProgressRing({

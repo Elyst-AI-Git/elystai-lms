@@ -13,7 +13,7 @@ export default async function AdminProgress() {
     .eq("status", "active")
     .order("created_at", { ascending: true });
 
-  // profiles live in public — PostgREST can't embed across schemas, so join here
+  // profiles live in public - PostgREST can't embed across schemas, so join here
   const profileIds = (enrollments ?? []).map((e) => e.profile_id);
   const { data: profiles } = profileIds.length
     ? await admin.from("profiles").select("id, full_name, email").in("id", profileIds)
@@ -37,14 +37,17 @@ export default async function AdminProgress() {
   return (
     <div className="space-y-5">
       <div className="flex items-baseline justify-between">
-        <h1 className="font-display text-h3 font-bold tracking-display text-fg">Cohort progress</h1>
+        <div>
+          <p className="eyebrow text-emerald">Learners</p>
+          <h1 className="mt-1 text-h2 text-fg">Cohort progress</h1>
+        </div>
         <p className="text-small text-fg-2">
           {rows.length} active learners · cohort average{" "}
           <span className="font-bold text-emerald">{cohortPercent}%</span>
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-card bg-white shadow-card">
+      <div className="overflow-x-auto rounded-md border border-border bg-white shadow-card">
         <table className="w-full text-left text-small">
           <thead>
             <tr className="border-b border-border text-label uppercase tracking-wide text-fg-3">
@@ -59,7 +62,7 @@ export default async function AdminProgress() {
             {rows.map((r) => (
               <tr key={r.id} className="border-b border-border/50 last:border-0">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-fg">{r.profile?.full_name ?? "—"}</p>
+                  <p className="font-medium text-fg">{r.profile?.full_name ?? "-"}</p>
                   <p className="text-label text-fg-3">{r.profile?.email}</p>
                 </td>
                 <td className="px-4 py-3 text-fg-2">{r.batch?.name}</td>

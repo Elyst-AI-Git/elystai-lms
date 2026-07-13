@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
-// Cutout Card — a card primitive whose pinned labels appear "cut into" the
+// Cutout Card - a card primitive whose pinned labels appear "cut into" the
 // surface via inverted-radius corners. Adapted to Elyst tokens; motion via
 // framer-motion.
 // ============================================================================

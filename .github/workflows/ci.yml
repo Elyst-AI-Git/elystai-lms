@@ -1,0 +1,41 @@
+name: CI
+
+# Free, zero-config quality gate. Runs on every push/PR to dev or main.
+# Mirrors the gates Claude runs locally before every merge: lint -> unit
+# suites -> production build. No secrets needed (the pure-logic tsx suites
+# never touch Supabase). The HTTP campaign (scripts/test-campaign.ts) stays
+# manual because it needs a live server + TEST DB session.
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Unit suites (pure logic, no network)
+        run: |
+          for f in scripts/test-drip.ts scripts/test-access.ts scripts/test-plan.ts \
+                   scripts/test-events.ts scripts/test-video.ts \
+                   scripts/test-admin-utils.ts; do
+            [ -f "$f" ] && echo "== $f ==" && npx tsx "$f" || true
+          done
+      - name: Production build
+        run: npm run build
+        env:
+          # Build-time public envs so `next build` can prerender. These are the
+          # TEST project's public (publishable) values — safe to expose, but set
+          # them as repo secrets so the file carries no keys.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}

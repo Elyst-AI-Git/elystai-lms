@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LessonTypeIcon } from "@/components/learn/lesson-icon";
+import { ArrowLeft, ArrowRight, FileText, Video } from "lucide-react";
 import { Markdown } from "@/components/learn/markdown";
 import { MarkDoneBar } from "@/components/learn/mark-done-button";
-import { SubmissionForm } from "@/components/learn/submission-form";
 import { VideoEmbed } from "@/components/learn/video-embed";
+import { resolveVideoEmbed } from "@/lib/lms/video";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
 import { LMS_EVENTS } from "@/lib/lms/events";
@@ -12,17 +12,6 @@ import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-
-const IST_DATETIME = new Intl.DateTimeFormat("en-IN", {
-  timeZone: "Asia/Kolkata",
-  weekday: "short",
-  day: "numeric",
-  month: "short",
-  hour: "numeric",
-  minute: "2-digit",
-});
-
-const TYPE_LABEL: Record<string, string> = { video: "Video", text: "Lesson", task: "Task" };
 
 export default async function LessonView({
   params,
@@ -39,7 +28,7 @@ export default async function LessonView({
     .schema("app")
     .from("lessons")
     .select(
-      "id, title, content_type, unlock_day_offset, position, is_preview, bunny_video_id, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id)"
+      "id, title, content_type, unlock_day_offset, position, is_preview, youtube_id, body_richtext, task_instructions, live_link, live_starts_at, modules!inner(course_id)"
     )
     .eq("modules.course_id", course.id)
     .order("unlock_day_offset", { ascending: true })
@@ -58,7 +47,7 @@ export default async function LessonView({
   const prev = courseLessons!.slice(0, index).reverse().find(unlockedNow) ?? null;
   const next = courseLessons!.slice(index + 1).find(unlockedNow) ?? null;
 
-  const [{ data: progressRow }, { data: submission }] = await Promise.all([
+  const [{ data: progressRow }, { data: materials }] = await Promise.all([
     supabase
       .schema("app")
       .from("lesson_progress")
@@ -66,15 +55,12 @@ export default async function LessonView({
       .eq("enrollment_id", enrollment.id)
       .eq("lesson_id", lesson.id)
       .maybeSingle(),
-    lesson.content_type === "task"
-      ? supabase
-          .schema("app")
-          .from("submissions")
-          .select("url, note, storage_path")
-          .eq("enrollment_id", enrollment.id)
-          .eq("lesson_id", lesson.id)
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
+    supabase
+      .schema("app")
+      .from("resources")
+      .select("id, title, description, url_or_storage_path, kind")
+      .eq("lesson_id", lesson.id)
+      .order("sort_order", { ascending: true }),
   ]);
 
   void logEvent({
@@ -83,57 +69,38 @@ export default async function LessonView({
     payload: { lessonId: lesson.id, enrollmentId: enrollment.id, contentType: lesson.content_type },
   });
 
-  const embedUrl =
-    lesson.content_type === "video" && lesson.bunny_video_id
-      ? `https://iframe.mediadelivery.net/embed/${process.env.BUNNY_STREAM_LIBRARY_ID}/${lesson.bunny_video_id}`
-      : null;
+  const videoEmbed =
+    lesson.content_type === "video" ? resolveVideoEmbed({ youtubeId: lesson.youtube_id }) : null;
 
   const dayHref = `/learn/${course.slug}/day/${lesson.unlock_day_offset}`;
 
   return (
-    <article className="space-y-5 pb-2">
+    <article className="mx-auto max-w-3xl space-y-5 pb-2">
       {/* header */}
       <div className="rise" style={{ ["--stagger-i" as string]: 0 }}>
         <div className="flex items-center justify-between">
-          <Link href={dayHref} className="text-label text-fg-3 hover:text-emerald">
-            ← Day {lesson.unlock_day_offset + 1}
+          <Link href={dayHref} className="inline-flex min-h-11 items-center gap-2 px-2 text-small font-bold text-fg-2 hover:text-emerald">
+            <ArrowLeft className="h-5 w-5" aria-hidden /> Day {lesson.unlock_day_offset + 1}
           </Link>
-          <span className="rounded-pill bg-emerald/10 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald">
-            {TYPE_LABEL[lesson.content_type] ?? lesson.content_type}
-          </span>
         </div>
-        <h1 className="mt-2 font-display text-h3 font-bold tracking-display text-fg">
+        <h1 className="mt-2 font-display text-h2 font-bold tracking-display text-fg">
           {lesson.title}
         </h1>
       </div>
 
       {/* video: full-bleed cinema strip on mobile */}
-      {embedUrl && (
-        <div className="rise -mx-4 bg-ink sm:mx-0 sm:overflow-hidden sm:rounded-card sm:shadow-card" style={{ ["--stagger-i" as string]: 1 }}>
-          <VideoEmbed lessonId={lesson.id} embedUrl={embedUrl} />
+      {videoEmbed && (
+        <div className="rise -mx-4 bg-ink sm:mx-0 sm:overflow-hidden sm:rounded-md sm:shadow-card" style={{ ["--stagger-i" as string]: 1 }}>
+          <VideoEmbed lessonId={lesson.id} embedUrl={videoEmbed.url} />
         </div>
       )}
-
-      {/* live session */}
-      {lesson.live_link && (
-        <div className="surface-dark-hero rise rounded-card p-5" style={{ ["--stagger-i" as string]: 1 }}>
-          <div className="flex items-center gap-2">
-            <span className="live-dot h-2 w-2 rounded-pill bg-green" />
-            <p className="text-label font-semibold uppercase tracking-wide text-green">Live session</p>
+      {lesson.content_type === "video" && !videoEmbed && (
+        <div className="rise flex aspect-video items-center justify-center rounded-md border border-green/30 bg-green/10 p-6 text-center" style={{ ["--stagger-i" as string]: 1 }}>
+          <div>
+            <Video className="mx-auto h-7 w-7 text-emerald" aria-hidden />
+            <p className="mt-3 text-small font-bold text-fg">Today&apos;s video is being prepared.</p>
+            <p className="mt-1 text-label text-fg-2">We&apos;re finishing the upload - it will appear right here later today. Nothing for you to do.</p>
           </div>
-          {lesson.live_starts_at && (
-            <p className="mt-2 text-small text-fg-muted-dark">
-              {IST_DATETIME.format(new Date(lesson.live_starts_at))} IST
-            </p>
-          )}
-          <a
-            href={lesson.live_link}
-            target="_blank"
-            rel="noreferrer"
-            className="pressable mt-4 inline-flex min-h-[48px] items-center justify-center rounded-md bg-green px-6 font-bold text-ink"
-          >
-            Join live class
-          </a>
         </div>
       )}
 
@@ -143,56 +110,35 @@ export default async function LessonView({
         </div>
       )}
 
-      {lesson.content_type === "task" && (
-        <>
-          {lesson.task_instructions && (
-            <div className="rise rounded-card border-l-4 border-green bg-white p-5 shadow-card" style={{ ["--stagger-i" as string]: 2 }}>
-              <p className="mb-2 flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-emerald">
-                <LessonTypeIcon type="task" className="h-3.5 w-3.5" /> Your task
-              </p>
-              <Markdown>{lesson.task_instructions}</Markdown>
-            </div>
-          )}
-          <div className="rise" style={{ ["--stagger-i" as string]: 3 }}>
-            <SubmissionForm
-              lessonId={lesson.id}
-              existing={
-                submission
-                  ? {
-                      url: submission.url,
-                      note: submission.note,
-                      hasScreenshot: Boolean(submission.storage_path),
-                    }
-                  : null
-              }
-            />
-          </div>
-          {!submission && !progressRow && (
-            <p className="text-label text-fg-3">
-              Tip: submit your work before marking this done — it helps us give you feedback.
-            </p>
-          )}
-        </>
+      {lesson.task_instructions && (
+        <div className="rise rounded-md border-l-4 border-green bg-white p-5 shadow-card" style={{ ["--stagger-i" as string]: 2 }}>
+          <p className="mb-2 text-label font-bold uppercase tracking-wide text-emerald">Today&apos;s practice</p>
+          <Markdown>{lesson.task_instructions}</Markdown>
+        </div>
       )}
 
-      {/* prev/next continuity */}
-      <nav className="flex items-center justify-between gap-4 border-t border-border pt-4 text-label">
-        {prev ? (
-          <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="min-w-0 text-fg-3 hover:text-emerald">
-            ← <span className="font-medium">{prev.title}</span>
-          </Link>
+      <section className="rise mt-9 space-y-3" style={{ ["--stagger-i" as string]: 3 }}>
+        <div>
+          <p className="eyebrow text-emerald">Materials</p>
+          <h2 className="mt-1 text-h3 text-fg">Use these with today&apos;s lesson.</h2>
+        </div>
+        {materials?.length ? (
+          materials.map((material) => (
+            <a className="pressable flex min-h-16 items-center gap-3 rounded-md border border-border bg-white p-4 shadow-card hover:shadow-card-hover" href={material.url_or_storage_path} key={material.id} rel="noreferrer" target="_blank">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald"><FileText className="h-5 w-5" aria-hidden /></span>
+              <span className="min-w-0 flex-1"><span className="block text-small font-bold text-fg">{material.title}</span>{material.description && <span className="mt-1 block text-label text-fg-3">{material.description}</span>}<span className="sr-only">, opens in a new tab</span></span>
+            </a>
+          ))
         ) : (
-          <span />
+          <div className="flex min-h-16 items-center gap-3 rounded-md border border-green/30 bg-green/10 p-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald"><FileText className="h-5 w-5" aria-hidden /></span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-small font-bold text-fg">Today&apos;s materials are on their way.</span>
+              <span className="mt-1 block text-label text-fg-2">We&apos;re putting the finishing touches on them - check back later today.</span>
+            </span>
+          </div>
         )}
-        {next && (
-          <Link
-            href={`/learn/${course.slug}/lesson/${next.id}`}
-            className="min-w-0 text-right text-fg-3 hover:text-emerald"
-          >
-            <span className="font-medium">{next.title}</span> →
-          </Link>
-        )}
-      </nav>
+      </section>
 
       <MarkDoneBar
         lessonId={lesson.id}
@@ -200,6 +146,26 @@ export default async function LessonView({
         nextHref={next ? `/learn/${course.slug}/lesson/${next.id}` : null}
         backHref={dayHref}
       />
+
+      {/* prev/next continuity */}
+      <nav className="flex items-center justify-between gap-4 pt-1 text-small font-bold">
+        {prev ? (
+          <Link href={`/learn/${course.slug}/lesson/${prev.id}`} className="inline-flex min-h-11 min-w-0 items-center gap-2 px-2 text-fg-2 hover:text-emerald">
+            <ArrowLeft className="h-5 w-5" aria-hidden /> Day {prev.unlock_day_offset + 1}
+          </Link>
+        ) : (
+          <span />
+        )}
+        {next && (
+          <Link
+            href={`/learn/${course.slug}/lesson/${next.id}`}
+            className="inline-flex min-h-11 min-w-0 items-center px-2 text-right text-fg-3 hover:text-emerald"
+          >
+            Day {next.unlock_day_offset + 1} <ArrowRight className="h-5 w-5" aria-hidden />
+          </Link>
+        )}
+      </nav>
+
     </article>
   );
 }

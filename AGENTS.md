@@ -5,14 +5,14 @@ Two AI agents work this repo in parallel. This file is the contract between them
 | Agent | Role | Owns |
 |---|---|---|
 | **Codex** | Engineer. Implements handoff plans. | `src/**` feature code, on `codex/*` branches only |
-| **Claude** | Tech lead + senior test engineer. Writes plans, tests, reviews. | `tasks/handoffs/**`, `scripts/test-*.ts`, `scripts/probe-*.ts`, reviews, merges |
+| **Claude Code** | Tech lead + senior test engineer. Writes plans, tests, reviews. | `tasks/handoffs/**`, `scripts/test-*.ts`, `scripts/probe-*.ts`, reviews, merges |
 
 ## Workflow (no-collision protocol)
 
 1. Claude writes a numbered plan in `tasks/handoffs/NNN-*.md` **plus failing test contracts** in `scripts/`, committed to `main`.
 2. Codex: `git checkout main && git pull`, then `git checkout -b codex/NNN-<slug>`. Never commit to `main`. Never rebase or force-push shared branches.
 3. Codex implements until the handoff's acceptance tests pass (`npx tsx scripts/test-*.ts`), plus the global gates below, committing incrementally on its branch. Push the branch when done and stop.
-4. Claude reviews the branch, runs the full gate suite, and merges to `main`. Only Claude merges.
+4. Claude reviews the branch, runs the full gate suite, and merges to `dev`. Only Claude merges.
 5. If Codex needs a decision not covered by the handoff: stop and leave a `QUESTIONS:` note at the bottom of the handoff file rather than improvising.
 
 File-ownership rule: Codex does not edit `tasks/`, `scripts/test-*`, `scripts/probe-*`, `supabase/migrations/0001–0011`, or `.env*`. Claude does not edit `src/**` while a `codex/*` branch for that area is open.
@@ -32,6 +32,8 @@ File-ownership rule: Codex does not edit `tasks/`, `scripts/test-*`, `scripts/pr
 - Design system: brand tokens from `src/app/globals.css` only (never hardcoded colors); Manrope display / DM Sans body; light-only; mobile-first 375px; LMS motion utilities in `src/app/lms.css`; SVG icons via lucide-react — **no emoji as icons**.
 
 ## Agent skills (mirrored in `.agents/addy-skills/`, gitignored)
+
+Go through these skills before and use the appropriate skill according to the tasks.
 
 Both agents read skills from `.agents/addy-skills/skills/<name>/SKILL.md` (Claude also has them installed as the `agent-skills` plugin). Division:
 

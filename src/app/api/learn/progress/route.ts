@@ -1,16 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getEnrollmentForLesson } from "@/lib/lms/auth";
+import { getEnrollmentForLesson, getUserOrNull } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
 import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * POST { lessonId, completed } — mark or un-mark a lesson (spec D3).
+ * POST { lessonId, completed } - mark or un-mark a lesson (spec D3).
  * Writes go through the USER client so lesson_progress RLS is exercised;
  * drip is enforced app-side here (RLS covers enrollment, drip is pacing).
  */
 export async function POST(req: NextRequest) {
+  // Distinguish "not signed in" (401) from "lesson not found / not your course"
+  // (404 below) so the contract is unambiguous and consistent across routes.
+  if (!(await getUserOrNull())) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
   let body: { lessonId?: unknown; completed?: unknown };
   try {
     body = await req.json();
