@@ -388,6 +388,27 @@ test("PDF upload anonymously is 403", async ({ request }) => {
 test.describe("guide and uploads", () => {
   test.use({ storageState: ADMIN_STATE });
 
+  test.afterAll(async () => {
+    // The upload test creates a real storage object; deleting its resource row
+    // doesn't remove the object, so sweep e2e-material files (TEST bucket only).
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key || !/cmihoglafjxtswtbitsz/.test(url)) return;
+    const headers = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
+    const listed = await fetch(`${url}/storage/v1/object/list/materials`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ prefix: "", limit: 1000 }),
+    }).then((r) => r.json()).catch(() => []);
+    // `search` matches name-start only, so filter substrings ourselves.
+    const prefixes = (Array.isArray(listed) ? listed : [])
+      .map((o: { name: string }) => o.name)
+      .filter((n: string) => n.includes("e2e-material"));
+    if (prefixes.length) {
+      await fetch(`${url}/storage/v1/object/materials`, { method: "DELETE", headers, body: JSON.stringify({ prefixes }) }).catch(() => {});
+    }
+  });
+
   test("Guide is in the nav and answers the everyday questions", async ({ page }) => {
     await page.goto("/admin/guide");
     await expect(page.getByRole("heading", { name: "Guide", level: 1 })).toBeVisible();
