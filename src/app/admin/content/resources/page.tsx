@@ -1,5 +1,6 @@
 import { RowActions } from "@/components/admin/crud";
 import { ResourceForm } from "@/components/admin/resource-form";
+import { isExternalLink } from "@/lib/lms/materials";
 import { createAdminSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -40,11 +41,16 @@ export default async function AdminResources() {
                 return (
                   <li key={r.id} className="flex items-center justify-between gap-3 rounded-md bg-bg px-3 py-2">
                     <div className="min-w-0 flex-1">
-                      <a href={r.url_or_storage_path} target="_blank" rel="noreferrer" className="font-medium text-fg hover:text-emerald">
-                        {r.title}
-                      </a>
+                      {isExternalLink(r.url_or_storage_path) ? (
+                        <a href={r.url_or_storage_path} target="_blank" rel="noreferrer" className="font-medium text-fg hover:text-emerald">
+                          {r.title}
+                        </a>
+                      ) : (
+                        // Stored file: private bucket, no public URL to link to.
+                        <span className="font-medium text-fg">{r.title}</span>
+                      )}
                       <span className="ml-2 text-label text-fg-3">
-                        {r.kind} · {moduleRow?.title ?? "General"}
+                        {isExternalLink(r.url_or_storage_path) ? r.kind : "PDF"} · {moduleRow?.title ?? "General"}
                         {batchRow ? ` · only ${batchRow.name}` : ""}
                       </span>
                     </div>

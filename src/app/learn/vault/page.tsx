@@ -1,8 +1,10 @@
-import { ArrowUpRight, LibraryBig, LockKeyhole } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, LibraryBig, LockKeyhole } from "lucide-react";
 import { ResourceKindIcon } from "@/components/learn/lesson-icon";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { DEFAULT_COURSE_SLUG } from "@/lib/lms/constants";
 import { isUnlocked } from "@/lib/lms/drip";
+import { isExternalLink } from "@/lib/lms/materials";
 import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -41,7 +43,6 @@ export default async function VaultPage() {
     modules: { title: string; position: number } | { title: string; position: number }[] | null;
   }
   const rows = (resources ?? []) as ResourceRow[];
-  const batchOnlyIds = new Set(rows.filter((r) => r.batch_id).map((r) => r.id));
   const groups = new Map<string, { title: string; position: number; items: ResourceRow[] }>();
   for (const r of rows) {
     const moduleRow = Array.isArray(r.modules) ? r.modules[0] : r.modules;
@@ -91,25 +92,30 @@ export default async function VaultPage() {
                 {locked ? <LockKeyhole className="h-6 w-6 text-fg-3" aria-label="Locked" /> : <span className="hidden text-label font-bold text-fg-3 sm:block">{group.items.length} {group.items.length === 1 ? "resource" : "resources"}</span>}
               </div>
               {!locked && <div className="mt-4 divide-y divide-border">
-                {group.items.map((resource) => (
-                  <a
-                    className="pressable flex min-h-16 items-center gap-3 py-3 transition-colors hover:bg-emerald/5"
-                    href={resource.url_or_storage_path}
-                    key={resource.id}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald">
-                      <ResourceKindIcon kind={resource.kind} />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-small font-bold leading-snug text-fg">{resource.title}</span>
-                      <span className="mt-0.5 block text-label text-fg-3">{resource.kind}<span className="sr-only">, opens in a new tab</span></span>
-                    </span>
-                    {batchOnlyIds.has(resource.id) && <span className="hidden rounded-pill bg-green/15 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-emerald sm:inline">Your batch</span>}
-                    <ArrowUpRight className="h-4 w-4 shrink-0 text-fg-3" aria-hidden />
-                  </a>
-                ))}
+                {group.items.map((resource) => {
+                  const external = isExternalLink(resource.url_or_storage_path);
+                  const kindLabel = external ? resource.kind : "PDF";
+                  const inner = (
+                    <>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald">
+                        <ResourceKindIcon kind={external ? resource.kind : "doc"} />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-small font-bold leading-snug text-fg">{resource.title}</span>
+                        <span className="mt-0.5 block text-label uppercase tracking-wide text-fg-3">{kindLabel}{external && <span className="sr-only">, opens in a new tab</span>}</span>
+                      </span>
+                      {external
+                        ? <ArrowUpRight className="h-4 w-4 shrink-0 text-fg-3" aria-hidden />
+                        : <ArrowRight className="h-4 w-4 shrink-0 text-fg-3" aria-hidden />}
+                    </>
+                  );
+                  const cls = "pressable flex min-h-16 items-center gap-3 py-3 transition-colors hover:bg-emerald/5";
+                  return external ? (
+                    <a className={cls} href={resource.url_or_storage_path} key={resource.id} rel="noreferrer" target="_blank">{inner}</a>
+                  ) : (
+                    <Link className={cls} href={`/learn/${course.slug}/material/${resource.id}`} key={resource.id}>{inner}</Link>
+                  );
+                })}
               </div>}
             </section>;
           })}

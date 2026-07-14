@@ -368,6 +368,13 @@ test("resources POST anonymously is 403", async ({ request }) => {
   expect(r.status()).toBe(403);
 });
 
+// Top level: the built-in `request` fixture here carries no auth cookie, so this
+// is the real Postman/unauthenticated case for the secure PDF proxy.
+test("materials proxy blocks unauthenticated requests (Postman case)", async ({ request }) => {
+  const r = await request.get("/api/learn/materials/00000000-0000-0000-0000-000000000000");
+  expect(r.status()).toBe(401);
+});
+
 test("PDF upload anonymously is 403", async ({ request }) => {
   const r = await request.post("/api/admin/content/upload", {
     multipart: { file: { name: "x.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 test") } },
@@ -392,7 +399,7 @@ test.describe("guide and uploads", () => {
     await expect(page.getByLabel("Admin workspace").getByRole("link", { name: "Guide" })).toBeVisible();
   });
 
-  test("upload a local PDF end-to-end: hosted URL stored, then cleaned up", async ({ page }) => {
+  test("upload a local PDF end-to-end: stored as a private path, never a public URL", async ({ page }) => {
     const title = `E2E Upload PDF ${RUN}`;
     await page.goto("/admin/content/resources");
     const section = page.locator("section").filter({ hasText: "AI for Work" }).first();
@@ -407,18 +414,14 @@ test.describe("guide and uploads", () => {
 
     const row = section.locator("li").filter({ hasText: title });
     await expect(row).toBeVisible();
-    // the stored link must be OUR hosted storage URL, not a placeholder
-    const href = await row.getByRole("link", { name: title }).getAttribute("href");
-    expect(href).toContain("/storage/v1/object/public/materials/");
-    expect(href).toContain("e2e-material");
+    // Stored files must NOT be exposed as a clickable public URL in the admin
+    // list - they are a private path served only through the auth-gated proxy.
+    await expect(row.getByText(/^PDF ·/)).toBeVisible();
+    await expect(row.getByRole("link", { name: title })).toHaveCount(0);
+    // No supabase public-storage URL anywhere on the page.
+    expect(await page.content()).not.toContain("/storage/v1/object/public/materials/");
 
-    // the hosted file is actually publicly fetchable
-    const res = await page.request.get(href!);
-    expect(res.status()).toBe(200);
-    expect(res.headers()["content-type"]).toContain("pdf");
-
-    // cleanup: delete the resource row (the storage object is test debris in a
-    // TEST-only bucket; rows are what learners see)
+    // cleanup
     page.once("dialog", (d) => d.accept());
     await row.getByRole("button", { name: "Delete" }).click();
     await expect(section.getByText(title)).toHaveCount(0);

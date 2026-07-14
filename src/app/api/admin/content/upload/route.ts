@@ -5,11 +5,11 @@ import { logEvent } from "@/lib/logging";
 import { createAdminSupabaseClient } from "@/lib/supabase/server";
 
 /**
- * Admin PDF upload for course materials. Files land in the public `materials`
- * bucket (public READ only - writes go exclusively through this admin-gated
- * route with the service role; the bucket has no user storage policies).
- * Public URLs never expire, so they are safe to store in
- * resources.url_or_storage_path.
+ * Admin PDF upload for course materials. Files land in the PRIVATE `materials`
+ * bucket (no public read). We store only the storage PATH in the resource row;
+ * learners fetch the bytes through the auth-gated /api/learn/materials/[id]
+ * proxy, so the Supabase URL is never exposed and the file can't be hit
+ * directly.
  */
 
 const MAX_BYTES = 25 * 1024 * 1024; // matches the bucket's file_size_limit
@@ -50,13 +50,13 @@ export async function POST(req: NextRequest) {
     .upload(path, file, { contentType: "application/pdf" });
   if (error) return NextResponse.json({ error: `Upload failed: ${error.message}` }, { status: 500 });
 
-  const { data } = admin.storage.from("materials").getPublicUrl(path);
-
   await logEvent({
     event: LMS_EVENTS.admin.content.created,
     profileId: user.id,
     payload: { table: "storage/materials", id: path },
   });
 
-  return NextResponse.json({ ok: true, url: data.publicUrl, path });
+  // Return the storage PATH (not a public URL) - this is what gets stored and
+  // what the proxy resolves. Private bucket = no public URL exists.
+  return NextResponse.json({ ok: true, path, url: path });
 }
