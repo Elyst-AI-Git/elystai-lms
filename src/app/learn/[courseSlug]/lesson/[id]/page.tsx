@@ -7,6 +7,7 @@ import { VideoEmbed } from "@/components/learn/video-embed";
 import { resolveVideoEmbed } from "@/lib/lms/video";
 import { requireEnrollment } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
+import { isExternalLink } from "@/lib/lms/materials";
 import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -123,12 +124,21 @@ export default async function LessonView({
           <h2 className="mt-1 text-h3 text-fg">Use these with today&apos;s lesson.</h2>
         </div>
         {materials?.length ? (
-          materials.map((material) => (
-            <a className="pressable flex min-h-16 items-center gap-3 rounded-md border border-border bg-white p-4 shadow-card hover:shadow-card-hover" href={material.url_or_storage_path} key={material.id} rel="noreferrer" target="_blank">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald"><FileText className="h-5 w-5" aria-hidden /></span>
-              <span className="min-w-0 flex-1"><span className="block text-small font-bold text-fg">{material.title}</span>{material.description && <span className="mt-1 block text-label text-fg-3">{material.description}</span>}<span className="sr-only">, opens in a new tab</span></span>
-            </a>
-          ))
+          materials.map((material) => {
+            const external = isExternalLink(material.url_or_storage_path);
+            const cls = "pressable flex min-h-16 items-center gap-3 rounded-md border border-border bg-white p-4 shadow-card hover:shadow-card-hover";
+            const inner = (
+              <>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald"><FileText className="h-5 w-5" aria-hidden /></span>
+                <span className="min-w-0 flex-1"><span className="block text-small font-bold text-fg">{material.title}</span>{material.description && <span className="mt-1 block text-label text-fg-3">{material.description}</span>}{external && <span className="sr-only">, opens in a new tab</span>}</span>
+              </>
+            );
+            return external ? (
+              <a className={cls} href={material.url_or_storage_path} key={material.id} rel="noreferrer" target="_blank">{inner}</a>
+            ) : (
+              <Link className={cls} href={`/learn/${course.slug}/material/${material.id}`} key={material.id}>{inner}</Link>
+            );
+          })
         ) : (
           <div className="flex min-h-16 items-center gap-3 rounded-md border border-green/30 bg-green/10 p-4">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-emerald/10 text-emerald"><FileText className="h-5 w-5" aria-hidden /></span>

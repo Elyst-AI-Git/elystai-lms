@@ -42,7 +42,8 @@ export function ResourceForm({
     setError(null);
 
     // A chosen file wins over a pasted link: upload it first, then store the
-    // permanent public URL the server returns.
+    // storage PATH the server returns (the bucket is private - learners fetch
+    // it through the auth-gated proxy, never a public URL).
     if (pdf instanceof File && pdf.size > 0) {
       const upload = new FormData();
       upload.append("file", pdf);
