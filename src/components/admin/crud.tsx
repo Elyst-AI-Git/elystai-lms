@@ -14,11 +14,18 @@ export async function adminFetch(
   body?: Record<string, unknown>,
   query?: string
 ): Promise<string | null> {
-  const res = await fetch(`${endpoint}${query ?? ""}`, {
-    method,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${endpoint}${query ?? ""}`, {
+      method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    // Network failure (offline, DNS, etc.) - fetch() rejects rather than
+    // resolving with a bad status, so this needs its own message.
+    return "Network error - check your connection and try again.";
+  }
   if (res.ok) return null;
   const data = await res.json().catch(() => null);
   return data?.error ?? `Request failed (${res.status})`;
@@ -74,6 +81,67 @@ export function InlineCreate({
       </button>
       {error && <span className="text-label text-destructive">{error}</span>}
     </form>
+  );
+}
+
+/**
+ * Drag-handle reorder for a list of rows. Wraps each `{id, node}` pair in a
+ * draggable `<li>`; dropping one row onto another moves it there in a single
+ * PATCH (vs. clicking the up/down arrows N times). Those arrows stay in
+ * RowActions as a keyboard-accessible fallback - this is purely an additive
+ * fast path for mouse/touch users.
+ */
+export function DraggableList({
+  endpoint,
+  items,
+  className,
+}: {
+  endpoint: string;
+  items: { id: string; node: React.ReactNode }[];
+  className?: string;
+}) {
+  const router = useRouter();
+  const [busy, setBusy] = React.useState(false);
+  const [dragOverId, setDragOverId] = React.useState<string | null>(null);
+  const draggedId = React.useRef<string | null>(null);
+
+  async function moveTo(targetId: string) {
+    const fromId = draggedId.current;
+    draggedId.current = null;
+    setDragOverId(null);
+    if (!fromId || fromId === targetId) return;
+    const ids = items.map((i) => i.id);
+    const fromIndex = ids.indexOf(fromId);
+    const toIndex = ids.indexOf(targetId);
+    if (fromIndex === -1 || toIndex === -1) return;
+    const next = [...ids];
+    next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, fromId);
+    setBusy(true);
+    const problem = await adminFetch(endpoint, "PATCH", {
+      reorder: next.map((id, position) => ({ id, position })),
+    });
+    setBusy(false);
+    if (problem) alert(problem);
+    else router.refresh();
+  }
+
+  return (
+    <ul className={className ?? "space-y-1.5"}>
+      {items.map(({ id, node }) => (
+        <li
+          key={id}
+          draggable
+          onDragStart={() => { draggedId.current = id; }}
+          onDragOver={(e) => { e.preventDefault(); if (dragOverId !== id) setDragOverId(id); }}
+          onDragLeave={() => setDragOverId((cur) => (cur === id ? null : cur))}
+          onDrop={(e) => { e.preventDefault(); void moveTo(id); }}
+          className={`rounded-md transition-shadow ${dragOverId === id ? "ring-2 ring-emerald" : ""} ${busy ? "opacity-60" : ""}`}
+        >
+          {node}
+        </li>
+      ))}
+    </ul>
   );
 }
 

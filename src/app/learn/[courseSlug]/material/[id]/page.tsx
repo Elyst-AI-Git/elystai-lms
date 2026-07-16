@@ -15,15 +15,19 @@ export default async function MaterialViewer({
 }) {
   const { courseSlug, id } = await params;
   // Gate the page on enrollment; the API route enforces the real access rules.
-  await requireEnrollment(courseSlug);
-
-  const supabase = await createServerSupabaseClient();
-  const { data: resource } = await supabase
-    .schema("app")
-    .from("resources")
-    .select("id, title, description, url_or_storage_path")
-    .eq("id", id)
-    .maybeSingle();
+  // Run alongside the resource fetch (RLS scopes it independently) instead of
+  // waiting on it first - saves a full round trip on the hottest read path.
+  const [, { data: resource }] = await Promise.all([
+    requireEnrollment(courseSlug),
+    createServerSupabaseClient().then((supabase) =>
+      supabase
+        .schema("app")
+        .from("resources")
+        .select("id, title, description, url_or_storage_path")
+        .eq("id", id)
+        .maybeSingle()
+    ),
+  ]);
 
   // Only our stored PDFs are viewed here; external links are opened directly.
   if (!resource || isExternalLink(resource.url_or_storage_path)) notFound();

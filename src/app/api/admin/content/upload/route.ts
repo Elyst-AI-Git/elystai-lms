@@ -57,6 +57,8 @@ export async function POST(req: NextRequest) {
   });
 
   // Return the storage PATH (not a public URL) - this is what gets stored and
-  // what the proxy resolves. Private bucket = no public URL exists.
-  return NextResponse.json({ ok: true, path, url: path });
+  // what the proxy resolves. Private bucket = no public URL exists. Also
+  // return the original filename so downloads can be named after the file
+  // the admin actually uploaded, not the resource title.
+  return NextResponse.json({ ok: true, path, url: path, originalFilename: file.name });
 }

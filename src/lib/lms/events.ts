@@ -27,6 +27,9 @@ export const LMS_EVENTS = {
     vault: {
       viewed: "learner.vault.viewed",
     },
+    material: {
+      opened: "learner.material.opened",
+    },
   },
   admin: {
     content: {

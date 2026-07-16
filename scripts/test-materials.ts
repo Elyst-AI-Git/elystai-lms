@@ -2,7 +2,7 @@
  * Unit tests for src/lib/lms/materials.ts (secure PDF proxy path resolution).
  * Run: npx tsx scripts/test-materials.ts
  */
-import { isExternalLink, materialStoragePath, safePdfFilename } from "../src/lib/lms/materials";
+import { downloadFilename, isExternalLink, materialStoragePath, safePdfFilename } from "../src/lib/lms/materials";
 
 let failures = 0;
 function check(name: string, actual: unknown, expected: unknown) {
@@ -36,6 +36,13 @@ check("encoded space in key decoded", materialStoragePath("https://x.supabase.co
 check("title -> filename", safePdfFilename("Task 1-Build Your Custom Instructions"), "Task-1-Build-Your-Custom-Instructions.pdf");
 check("strips unsafe chars", safePdfFilename('bad/\\:*?"<>|name'), "badname.pdf");
 check("empty title -> material.pdf", safePdfFilename(""), "material.pdf");
+
+// --- downloadFilename --------------------------------------------------------
+check("uses original filename when present", downloadFilename("Day 3 workbook", "Workbook_v3_FINAL.pdf"), "Workbook_v3_FINAL.pdf");
+check("adds .pdf if missing from original", downloadFilename("Day 3 workbook", "Workbook_v3_FINAL"), "Workbook_v3_FINAL.pdf");
+check("falls back to title when no original filename", downloadFilename("Day 3 workbook", null), "Day-3-workbook.pdf");
+check("falls back to title when original is blank", downloadFilename("Day 3 workbook", "   "), "Day-3-workbook.pdf");
+check("strips header-injection chars from original", downloadFilename("t", 'evil"\r\nX-Injected: 1.pdf'), "evilX-Injected: 1.pdf");
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed`);
