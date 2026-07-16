@@ -32,7 +32,6 @@ export function ResourceForm({
     const data = new FormData(formEl);
     const pdf = data.get("pdf");
     let url = String(data.get("url") ?? "").trim();
-    let originalFilename: string | null = null;
 
     if (!(pdf instanceof File && pdf.size > 0) && !url) {
       setError("Choose a PDF from your computer or paste a link - one of the two is required.");
@@ -56,7 +55,6 @@ export function ResourceForm({
         return;
       }
       url = body.url as string;
-      originalFilename = typeof body.originalFilename === "string" ? body.originalFilename : null;
     }
 
     const problem = await adminFetch("/api/admin/content/resources", "POST", {
@@ -64,7 +62,6 @@ export function ResourceForm({
       title: String(data.get("title") ?? "").trim(),
       description: String(data.get("description") ?? "").trim(),
       url_or_storage_path: url,
-      original_filename: originalFilename,
       kind: String(data.get("kind") ?? "link"),
       module_id: String(data.get("module_id") ?? "") || "",
       lesson_id: String(data.get("lesson_id") ?? "") || "",

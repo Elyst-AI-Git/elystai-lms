@@ -40,17 +40,3 @@ export function safePdfFilename(title: string): string {
     .slice(0, 80) || "material";
   return `${base}.pdf`;
 }
-
-/**
- * Download filename for a resource: the original PDF the admin uploaded when
- * we have it, else a name derived from the title (legacy rows / external
- * links never had an original filename recorded). Strips characters that
- * could break or inject into a Content-Disposition header.
- */
-export function downloadFilename(title: string, originalFilename: string | null | undefined): string {
-  const raw = (originalFilename ?? "").trim();
-  if (!raw) return safePdfFilename(title);
-  const cleaned = raw.replace(/["\\\r\n\x00-\x1f]/g, "").slice(0, 150).trim();
-  if (!cleaned) return safePdfFilename(title);
-  return /\.pdf$/i.test(cleaned) ? cleaned : `${cleaned}.pdf`;
-}
