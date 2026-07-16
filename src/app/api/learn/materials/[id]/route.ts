@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserOrNull } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
-import { materialStoragePath, safePdfFilename } from "@/lib/lms/materials";
+import { LMS_EVENTS } from "@/lib/lms/events";
+import { logEvent } from "@/lib/logging";
+import { downloadFilename, materialStoragePath } from "@/lib/lms/materials";
 import { createAdminSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { data: resource } = await admin
     .schema("app")
     .from("resources")
-    .select("id, title, url_or_storage_path, course_id, lesson_id, module_id, batch_id")
+    .select("id, title, url_or_storage_path, original_filename, course_id, lesson_id, module_id, batch_id")
     .eq("id", id)
     .maybeSingle();
   if (!resource) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -59,10 +61,20 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!path) return NextResponse.json({ error: "Not a stored file" }, { status: 404 });
 
   const { data: blob, error } = await admin.storage.from("materials").download(path);
-  if (error || !blob) return NextResponse.json({ error: "File unavailable" }, { status: 404 });
+  if (error || !blob) {
+    // Storage errors (missing object, transient outage) never reach the
+    // learner beyond a generic message - log the real reason server-side.
+    console.error("materials proxy: storage download failed:", resource.id, path, error?.message);
+    return NextResponse.json({ error: "File unavailable" }, { status: 404 });
+  }
 
   const download = req.nextUrl.searchParams.get("download") === "1";
-  const filename = safePdfFilename(resource.title);
+  const filename = downloadFilename(resource.title, resource.original_filename);
+  void logEvent({
+    event: LMS_EVENTS.learner.material.opened,
+    profileId: user.id,
+    payload: { resourceId: resource.id, download },
+  });
   return new Response(blob, {
     headers: {
       "Content-Type": "application/pdf",

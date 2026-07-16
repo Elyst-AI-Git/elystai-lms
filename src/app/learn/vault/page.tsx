@@ -89,7 +89,14 @@ export default async function VaultPage() {
                   <p className="eyebrow text-emerald">{locked ? "Unlocks with your cohort" : "Learning area"}</p>
                   <h2 className="mt-1 text-h3 text-fg">{group.title}</h2>
                 </div>
-                {locked ? <LockKeyhole className="h-6 w-6 text-fg-3" aria-label="Locked" /> : <span className="hidden text-label font-bold text-fg-3 sm:block">{group.items.length} {group.items.length === 1 ? "resource" : "resources"}</span>}
+                {locked ? (
+                  <span className="flex items-center gap-2 text-label font-bold text-fg-3">
+                    <LockKeyhole className="h-6 w-6 shrink-0" aria-hidden />
+                    {firstDay && `Unlocks Day ${firstDay.day + 1}`}
+                  </span>
+                ) : (
+                  <span className="hidden text-label font-bold text-fg-3 sm:block">{group.items.length} {group.items.length === 1 ? "resource" : "resources"}</span>
+                )}
               </div>
               {!locked && <div className="mt-4 divide-y divide-border">
                 {group.items.map((resource) => {

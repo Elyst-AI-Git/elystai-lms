@@ -47,6 +47,29 @@ export function PdfViewer({ src, title }: { src: string; title: string }) {
     return () => ro.disconnect();
   }, [mounted]);
 
+  // Render pages incrementally: mounting every <Page> up front is what makes
+  // long PDFs (guides, workbooks) feel slow to open, while short 1-2 page
+  // task sheets feel instant. Start with a small window and grow it as the
+  // learner scrolls toward the bottom.
+  const PAGE_BATCH = 3;
+  const [renderedCount, setRenderedCount] = React.useState(0);
+
+  const sentinelRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || renderedCount >= numPages) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setRenderedCount((c) => Math.min(c + PAGE_BATCH, numPages));
+        }
+      },
+      { rootMargin: "600px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [renderedCount, numPages]);
+
   const downloadHref = `${src}${src.includes("?") ? "&" : "?"}download=1`;
 
   return (
@@ -77,12 +100,12 @@ export function PdfViewer({ src, title }: { src: string; title: string }) {
             options={DOC_OPTIONS}
             loading={<ViewerLoading />}
             error={<DownloadFallback downloadHref={downloadHref} />}
-            onLoadSuccess={({ numPages: n }) => setNumPages(n)}
+            onLoadSuccess={({ numPages: n }) => { setNumPages(n); setRenderedCount(Math.min(PAGE_BATCH, n)); }}
             onLoadError={() => setFailed(true)}
             onSourceError={() => setFailed(true)}
             className="flex flex-col items-center gap-4"
           >
-            {Array.from({ length: numPages }, (_, i) => (
+            {Array.from({ length: renderedCount }, (_, i) => (
               <Page
                 key={i}
                 pageNumber={i + 1}
@@ -92,6 +115,11 @@ export function PdfViewer({ src, title }: { src: string; title: string }) {
                 renderTextLayer
               />
             ))}
+            {renderedCount < numPages && (
+              <div ref={sentinelRef} className="flex min-h-24 items-center justify-center">
+                <Loader2 className="h-5 w-5 animate-spin text-fg-3" aria-hidden />
+              </div>
+            )}
           </Document>
         )}
       </div>
