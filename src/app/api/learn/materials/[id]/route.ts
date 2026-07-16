@@ -3,7 +3,7 @@ import { getUserOrNull } from "@/lib/lms/auth";
 import { isUnlocked } from "@/lib/lms/drip";
 import { LMS_EVENTS } from "@/lib/lms/events";
 import { logEvent } from "@/lib/logging";
-import { downloadFilename, materialStoragePath } from "@/lib/lms/materials";
+import { materialStoragePath, safePdfFilename } from "@/lib/lms/materials";
 import { createAdminSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { data: resource } = await admin
     .schema("app")
     .from("resources")
-    .select("id, title, url_or_storage_path, original_filename, course_id, lesson_id, module_id, batch_id")
+    .select("id, title, url_or_storage_path, course_id, lesson_id, module_id, batch_id")
     .eq("id", id)
     .maybeSingle();
   if (!resource) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 
   const download = req.nextUrl.searchParams.get("download") === "1";
-  const filename = downloadFilename(resource.title, resource.original_filename);
+  const filename = safePdfFilename(resource.title);
   void logEvent({
     event: LMS_EVENTS.learner.material.opened,
     profileId: user.id,
