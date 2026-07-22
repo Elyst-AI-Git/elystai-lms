@@ -9,6 +9,8 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
+const COURSE_DURATION_DAYS = 14;
+
 function StatStrip({
   label,
   value,
@@ -81,8 +83,8 @@ export default async function LearnDashboard() {
             progress.perDay.length === 0
               ? "Starting soon"
               : today >= 0
-                ? `Day ${today + 1} of ${progress.perDay.length}`
-                : `Day 1 of ${progress.perDay.length}`
+                ? `Day ${Math.min(today + 1, COURSE_DURATION_DAYS)} of ${COURSE_DURATION_DAYS}`
+                : `Day 1 of ${COURSE_DURATION_DAYS}`
           }
         />
       </section>
